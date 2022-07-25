@@ -10,10 +10,15 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven { url 'https://deps.aotter.net/artifactory/libs-release-local' }
+        maven { url 'https://artifacts.applovin.com/android' }
     }
 }
 rootProject.name = "aotter-trek-mediation-android"
-include ':app'
-include ':AdMob'
-include ':GAM'
-include ':MAX'
+include ':mediation'
+include ':mediation:admob'
+include ':mediation:gam'
+include ':mediation:max'
+include ':admob'
+include ':gam'
+include ':max'

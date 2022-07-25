@@ -1,0 +1,18 @@
+project.group = 'com.aotter.android'
+project.ext.projectName = 'trek-gam-mediation'
+project.version = mediationVersion
+project.description = 'lib for trek gam mediation'
+project.ext.mediationName = 'GAM'
+
+
+apply from : '../common.gradle'
+
+dependencies {
+
+    implementation 'com.google.android.gms:play-services-ads:21.1.0'
+
+}
+
+if (file('../publisher.gradle').exists()) {
+    apply from: '../publisher.gradle'
+}

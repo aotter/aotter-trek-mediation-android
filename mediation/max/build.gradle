@@ -1,0 +1,21 @@
+
+project.group = 'com.aotter.android'
+project.ext.projectName = 'trek-max-mediation'
+project.version = mediationVersion
+project.description = 'lib for trek max mediation'
+project.ext.mediationName = 'MAX'
+
+apply from : '../common.gradle'
+
+dependencies {
+
+    implementation 'com.applovin:applovin-sdk:11.4.4'
+
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.1'
+
+}
+
+if (file('../publisher.gradle').exists()) {
+    apply from: '../publisher.gradle'
+}
+

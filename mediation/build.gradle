@@ -1,0 +1,22 @@
+
+project.group = 'com.aotter.android'
+project.ext.projectName = 'trek-mediation'
+project.version = mediationVersion
+project.description = 'lib for trek mediation'
+project.ext.mediationName = 'Trek_Mediation'
+
+apply from : 'common.gradle'
+
+dependencies {
+
+    api project(':mediation:admob')
+    api project(':mediation:gam')
+    api project(':mediation:max')
+
+}
+
+if (file('publisher.gradle').exists()) {
+    apply from: 'publisher.gradle'
+}
+
+
