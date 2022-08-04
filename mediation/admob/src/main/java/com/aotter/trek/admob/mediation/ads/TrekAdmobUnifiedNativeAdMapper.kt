@@ -149,16 +149,12 @@ class TrekAdmobUnifiedNativeAdMapper(private val context: Context) : UnifiedNati
 
                 nativeAdViewController?.apply {
 
-                    var mediaView: TrekMediaView? = null
-
                     nativeAdView.mediaView?.forEach { view ->
                         (view as? TrekMediaView)?.let { trekMediaView ->
-                            mediaView = trekMediaView
+                            this.setTrekMediaView(trekMediaView)
                             return@forEach
                         }
                     }
-
-                    this.setTrekMediaView(mediaView)
 
                     this.setTrekNativeAd(trekNativeAd)
 
