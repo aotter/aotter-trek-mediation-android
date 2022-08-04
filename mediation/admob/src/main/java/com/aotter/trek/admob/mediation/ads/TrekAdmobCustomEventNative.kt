@@ -6,7 +6,6 @@ import android.util.Log
 import com.aotter.net.trek.TrekAds
 import com.aotter.net.trek.ads.TrekAdLoader
 import com.aotter.net.trek.ads.TrekAdRequest
-import com.aotter.net.utils.TrekSdkSettingsUtils
 import com.aotter.trek.admob.mediation.BuildConfig
 import com.aotter.trek.admob.mediation.TrekAdmobDataKey
 import com.aotter.trek.admob.mediation.extension.getVersion
@@ -22,6 +21,7 @@ class TrekAdmobCustomEventNative : Adapter() {
         private const val NEED_CLIENT_ID_TAG = "Not found client id or empty string."
         private const val SERVER_PARAMETER = "parameter"
         private const val PLACE_UID = "placeUid"
+        private const val CLIENT_ID = "clientId"
     }
 
     override fun initialize(
@@ -43,27 +43,28 @@ class TrekAdmobCustomEventNative : Adapter() {
 
             val context = mediationNativeAdConfiguration.context
 
+            val serverParameterDto = JSONObject(
+                mediationNativeAdConfiguration.serverParameters.getString(
+                    SERVER_PARAMETER
+                ) ?: ""
+            )
+
+            val placeUid = serverParameterDto.getString(PLACE_UID)
+
+            val clientId = serverParameterDto.getString(CLIENT_ID)
+
+            if (clientId.isEmpty()) {
+                throw IllegalArgumentException(NEED_CLIENT_ID_TAG)
+            }
+
+            if (placeUid.isNullOrEmpty()) {
+                throw IllegalArgumentException(NEED_PLACE_UUID_TAG)
+            }
+
             TrekAds.initialize(
-                context
+                context,
+                clientId
             ) {
-
-                val serverParameterDto = JSONObject(
-                    mediationNativeAdConfiguration.serverParameters.getString(
-                        SERVER_PARAMETER
-                    ) ?: ""
-                )
-
-                val placeUid = serverParameterDto.getString(PLACE_UID)
-
-                val clientId = TrekSdkSettingsUtils.getClientId()
-
-                if (clientId.isEmpty()) {
-                    throw IllegalArgumentException(NEED_CLIENT_ID_TAG)
-                }
-
-                if (placeUid.isNullOrEmpty()) {
-                    throw IllegalArgumentException(NEED_PLACE_UUID_TAG)
-                }
 
                 val category =
                     mediationNativeAdConfiguration.mediationExtras.getString(TrekAdmobDataKey.CATEGORY)

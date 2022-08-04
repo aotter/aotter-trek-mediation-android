@@ -16,10 +16,6 @@
         tools:targetApi="s">
 
         <meta-data
-            android:name="trek.client.id"
-            android:value="DNgNhOwfbUkOqcQFI+uD" />
-
-        <meta-data
             android:name="applovin.sdk.key"
             android:value="UHMIs5HKBAm1I_J2Ii11mRdSBU9BPoz7tADXqa7KBKSdD7NO_vC4ZPiO_z2sXeygrA-vDi1uGQ4lxRVx3Jz3FK" />
 

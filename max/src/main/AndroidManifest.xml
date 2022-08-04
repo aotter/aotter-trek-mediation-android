@@ -15,9 +15,6 @@
         android:theme="@style/Theme.aotter.trek"
         tools:targetApi="s">
 
-        <meta-data
-            android:name="trek.client.id"
-            android:value="DNgNhOwfbUkOqcQFI+uD" />
 
         <meta-data
             android:name="applovin.sdk.key"

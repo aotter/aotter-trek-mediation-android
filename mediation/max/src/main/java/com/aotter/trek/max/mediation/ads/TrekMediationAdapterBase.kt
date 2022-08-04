@@ -25,6 +25,7 @@ abstract class TrekMediationAdapterBase(appLovinSdk: AppLovinSdk) :
     private var scope = CoroutineScope(Dispatchers.Main + SupervisorJob())
 
     companion object {
+        private const val CLIENT_ID = "clientId"
         const val NEED_CORRECT_CONTEXT =
             "Require a more restrictive Context that is of type Activity or Fragment. / Context not null. "
         const val NEED_PLACE_UUID_TAG = "Not found placeUid or empty string."
@@ -39,11 +40,14 @@ abstract class TrekMediationAdapterBase(appLovinSdk: AppLovinSdk) :
 
         scope.launch {
 
+            val clientId =
+                maxAdapterInitializationParameters?.customParameters?.getString(CLIENT_ID) ?: ""
+
             if (activity == null) {
                 throw NullPointerException(NEED_CORRECT_CONTEXT)
             }
 
-            TrekAds.initialize(activity) {
+            TrekAds.initialize(activity,clientId) {
 
                 onCompletionListener?.onCompletion(
                     MaxAdapter.InitializationStatus.INITIALIZED_SUCCESS,
@@ -89,7 +93,7 @@ abstract class TrekMediationAdapterBase(appLovinSdk: AppLovinSdk) :
 
         maxAdapterResponseParameters?.apply {
 
-            clientId = TrekSdkSettingsUtils.getClientId()
+            clientId = this.customParameters.getString(CLIENT_ID) ?: ""
 
             placeUid = this.thirdPartyAdPlacementId ?: ""
 

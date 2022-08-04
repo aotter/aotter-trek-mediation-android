@@ -6,7 +6,6 @@ import android.util.Log
 import com.aotter.net.trek.TrekAds
 import com.aotter.net.trek.ads.TrekAdLoader
 import com.aotter.net.trek.ads.TrekAdRequest
-import com.aotter.net.utils.TrekSdkSettingsUtils
 import com.aotter.trek.gam.mediation.BuildConfig
 import com.aotter.trek.gam.mediation.TrekGamDataKey
 import com.aotter.trek.gam.mediation.extension.getVersion
@@ -22,6 +21,7 @@ class TrekGamCustomEventNative : Adapter() {
         private const val NEED_CLIENT_ID_TAG = "Not found client id or empty string."
         private const val SERVER_PARAMETER = "parameter"
         private const val PLACE_UID = "placeUid"
+        private const val CLIENT_ID = "clientId"
     }
 
     override fun initialize(
@@ -41,28 +41,30 @@ class TrekGamCustomEventNative : Adapter() {
 
         try {
 
+            val serverParameterDto = JSONObject(
+                mediationNativeAdConfiguration.serverParameters.getString(
+                    SERVER_PARAMETER
+                ) ?: ""
+            )
+
+            val clientId = serverParameterDto.getString(CLIENT_ID)
+
+            val placeUid = serverParameterDto.getString(PLACE_UID)
+
             val context = mediationNativeAdConfiguration.context
 
+            if (clientId.isEmpty()) {
+                throw IllegalArgumentException(NEED_CLIENT_ID_TAG)
+            }
+
+            if (placeUid.isNullOrEmpty()) {
+                throw IllegalArgumentException(NEED_PLACE_UUID_TAG)
+            }
+
             TrekAds.initialize(
-                context
+                context,
+                clientId
             ) {
-
-                val serverParameterDto = JSONObject(
-                    mediationNativeAdConfiguration.serverParameters.getString(
-                        SERVER_PARAMETER
-                    ) ?: ""
-                )
-                val clientId = TrekSdkSettingsUtils.getClientId()
-
-                val placeUid = serverParameterDto.getString(PLACE_UID)
-
-                if (clientId.isEmpty()) {
-                    throw IllegalArgumentException(NEED_CLIENT_ID_TAG)
-                }
-
-                if (placeUid.isNullOrEmpty()) {
-                    throw IllegalArgumentException(NEED_PLACE_UUID_TAG)
-                }
 
                 val category =
                     mediationNativeAdConfiguration.mediationExtras.getString(TrekGamDataKey.CATEGORY)
