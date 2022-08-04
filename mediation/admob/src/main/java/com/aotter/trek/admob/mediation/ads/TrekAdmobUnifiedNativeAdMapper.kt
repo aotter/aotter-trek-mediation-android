@@ -7,6 +7,7 @@ import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import androidx.core.view.forEach
 import com.aotter.net.dto.trek.response.Img
 import com.aotter.net.dto.trek.response.TrekNativeAd
 import com.aotter.net.trek.ads.NativeAdViewController
@@ -148,11 +149,16 @@ class TrekAdmobUnifiedNativeAdMapper(private val context: Context) : UnifiedNati
 
                 nativeAdViewController?.apply {
 
-                    nativeAdView.mediaView?.let {
+                    var mediaView: TrekMediaView? = null
 
-                        this.setTrekMediaView(trekMediaView)
-
+                    nativeAdView.mediaView?.forEach { view ->
+                        (view as? TrekMediaView)?.let { trekMediaView ->
+                            mediaView = trekMediaView
+                            return@forEach
+                        }
                     }
+
+                    this.setTrekMediaView(mediaView)
 
                     this.setTrekNativeAd(trekNativeAd)
 
