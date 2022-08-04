@@ -5,9 +5,9 @@ import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import com.aotter.net.dto.trek.response.TrekNativeAd
-import com.aotter.net.trek.ads.NativeAdViewController
 import com.aotter.net.trek.ads.TrekAdListener
 import com.aotter.net.trek.ads.TrekMediaView
+import com.aotter.net.trek.ads.ad_view_binding.TrekAdViewBinder
 import com.aotter.trek.max.mediation.TrekMaxDataKey
 import com.applovin.mediation.MaxAdFormat
 import com.applovin.mediation.adapter.MaxAdapterError
@@ -18,13 +18,12 @@ import com.applovin.mediation.nativeAds.MaxNativeAdView
 
 class TrekMaxNativeAdapterLoader(
     private val context: Context,
-    private val maxNativeAdAdapterListener: MaxNativeAdAdapterListener?,
-    private val nativeAdViewController: NativeAdViewController?
+    private val maxNativeAdAdapterListener: MaxNativeAdAdapterListener?
 ) : TrekAdListener {
 
     private var TAG: String = TrekMaxNativeAdapterLoader::class.java.simpleName
 
-    private var trekNativeAd: TrekNativeAd? = null
+    var trekNativeAd: TrekNativeAd? = null
 
     private val trekMediaView by lazy {
 
@@ -40,13 +39,13 @@ class TrekMaxNativeAdapterLoader(
         val imgIconHd = trekNativeAd.imgIconHd.drawable?.let { drawable ->
             MaxNativeAd.MaxNativeAdImage(drawable)
         } ?: kotlin.run {
-            MaxNativeAd.MaxNativeAdImage(trekNativeAd.imgIconHd.uri?:Uri.parse(""))
+            MaxNativeAd.MaxNativeAdImage(trekNativeAd.imgIconHd.uri ?: Uri.parse(""))
         }
 
         val imgMain = trekNativeAd.imgMain.drawable?.let { drawable ->
             MaxNativeAd.MaxNativeAdImage(drawable)
         } ?: kotlin.run {
-            MaxNativeAd.MaxNativeAdImage(trekNativeAd.imgMain.uri?:Uri.parse(""))
+            MaxNativeAd.MaxNativeAdImage(trekNativeAd.imgMain.uri ?: Uri.parse(""))
         }
 
         val builder = MaxNativeAd.Builder()
@@ -122,25 +121,20 @@ class TrekMaxNativeAdapterLoader(
 
             maxNativeAdView?.let { maxNativeAdView ->
 
-                nativeAdViewController?.apply {
+                val trekMediaView = maxNativeAdView.mediaContentViewGroup?.let {
 
-                    maxNativeAdView.mediaContentViewGroup?.let {
+                    (mediaView as? TrekMediaView)?.let { trekMediaView ->
 
-                        (mediaView as? TrekMediaView)?.let { trekMediaView ->
-
-                            this.setTrekMediaView(trekMediaView)
-
-                        }
+                        trekMediaView
 
                     }
 
-                    this.setTrekNativeAd(trekNativeAd)
-
-                    this.registeredContainerView(maxNativeAdView)
-
-                    Log.i(TAG, "Prepare view for interaction finish.")
-
                 }
+
+                TrekAdViewBinder
+                    .registerAdView(maxNativeAdView, trekMediaView, trekNativeAd)
+
+                Log.i(TAG, "Prepare view for interaction finish.")
 
             }
 

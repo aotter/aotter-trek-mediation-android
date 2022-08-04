@@ -2,9 +2,9 @@ package com.aotter.trek.max.mediation.ads
 
 import android.app.Activity
 import android.util.Log
-import com.aotter.net.trek.ads.NativeAdViewController
 import com.aotter.net.trek.ads.TrekAdLoader
 import com.aotter.net.trek.ads.TrekAdRequest
+import com.aotter.net.trek.ads.ad_view_binding.TrekAdViewBinder
 import com.aotter.trek.max.mediation.BuildConfig
 import com.applovin.mediation.adapter.listeners.MaxNativeAdAdapterListener
 import com.applovin.mediation.adapter.parameters.MaxAdapterResponseParameters
@@ -14,7 +14,7 @@ class TrekMaxNativeAdapter(appLovinSdk: AppLovinSdk) : TrekMediationAdapterBase(
 
     private var TAG: String = TrekMaxNativeAdapter::class.java.simpleName
 
-    private var nativeAdViewController: NativeAdViewController? = null
+    private var trekMaxNativeAdapterLoader: TrekMaxNativeAdapterLoader? = null
 
     override fun loadNativeAd(
         maxAdapterResponseParameters: MaxAdapterResponseParameters?,
@@ -61,16 +61,15 @@ class TrekMaxNativeAdapter(appLovinSdk: AppLovinSdk) : TrekMediationAdapterBase(
 
             Log.i(TAG, "contentTitle : $contentTitle")
 
-            nativeAdViewController = NativeAdViewController(activity)
+            trekMaxNativeAdapterLoader = TrekMaxNativeAdapterLoader(
+                activity,
+                maxNativeAdAdapterListener
+            )
 
             val trekAdLoader = TrekAdLoader
                 .Builder(activity, trekParameters.placeUid)
                 .withAdListener(
-                    TrekMaxNativeAdapterLoader(
-                        activity,
-                        maxNativeAdAdapterListener,
-                        nativeAdViewController
-                    )
+                    trekMaxNativeAdapterLoader
                 )
                 .build()
 
@@ -96,9 +95,13 @@ class TrekMaxNativeAdapter(appLovinSdk: AppLovinSdk) : TrekMediationAdapterBase(
 
     override fun onDestroy() {
 
-        nativeAdViewController?.destroy()
+        trekMaxNativeAdapterLoader?.trekNativeAd?.apply {
 
-        Log.i(TAG, "NativeAd Destroy.")
+            TrekAdViewBinder.destroy(this)
+
+            Log.i(TAG, "NativeAd Destroy.")
+
+        }
 
     }
 

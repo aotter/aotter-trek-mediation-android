@@ -7,23 +7,23 @@ import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import androidx.core.view.forEach
 import com.aotter.net.dto.trek.response.Img
 import com.aotter.net.dto.trek.response.TrekNativeAd
-import com.aotter.net.trek.ads.NativeAdViewController
 import com.aotter.net.trek.ads.TrekMediaView
+import com.aotter.net.trek.ads.ad_view_binding.TrekAdViewBinder
 import com.aotter.trek.gam.mediation.TrekGamDataKey
 import com.google.android.gms.ads.formats.NativeAd
 import com.google.android.gms.ads.mediation.UnifiedNativeAdMapper
 import com.google.android.gms.ads.nativead.NativeAdView
 
 class TrekGamUnifiedNativeAdMapper(private val context: Context) : UnifiedNativeAdMapper() {
+
     companion object {
 
         private const val IMAGE_SCALE = 1.0
 
     }
-
-    private var nativeAdViewController: NativeAdViewController? = null
 
     private var trekNativeAd: TrekNativeAd? = null
 
@@ -143,23 +143,18 @@ class TrekGamUnifiedNativeAdMapper(private val context: Context) : UnifiedNative
 
                 }
 
-                nativeAdViewController = NativeAdViewController(nativeAdView.context)
+                var mediaView: TrekMediaView? = null
 
-                nativeAdViewController?.apply {
-
-                    nativeAdView.mediaView?.let {
-
-                        this.setTrekMediaView(trekMediaView)
-
+                nativeAdView.mediaView?.forEach { view ->
+                    (view as? TrekMediaView)?.let { trekMediaView ->
+                        mediaView = trekMediaView
+                        return@forEach
                     }
-
-                    this.setTrekNativeAd(trekNativeAd)
-
-                    this.registeredContainerView(containerView)
-
-                    this.registeredChildViews(clickableViews)
-
                 }
+
+                TrekAdViewBinder
+                    .registerAdView(nativeAdView, mediaView, trekNativeAd)
+                    .registeredChildViews(clickableViews)
 
             }
 
@@ -170,7 +165,10 @@ class TrekGamUnifiedNativeAdMapper(private val context: Context) : UnifiedNative
     override fun untrackView(view: View) {
         super.untrackView(view)
 
-        nativeAdViewController?.destroy()
+        trekNativeAd?.let {trekNativeAd->
+            TrekAdViewBinder.destroy(trekNativeAd)
+        }
 
     }
+
 }
