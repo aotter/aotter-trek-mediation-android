@@ -2,6 +2,8 @@ package com.aotter.trek.admob.mediation.demo.native_ad
 
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.aotter.trek.admob.mediation.TrekAdmobDataKey
@@ -9,10 +11,15 @@ import com.aotter.trek.admob.mediation.ads.TrekAdmobCustomEventNative
 import com.aotter.trek.admob.mediation.demo.AdmobLocalNativeAdData
 import com.aotter.trek.admob.mediation.demo.AdmobNativeAdAdapter
 import com.aotter.trek.admob.mediation.demo.ItemCallback
+import com.aotter.trek.admob.mediation.demo.R
 import com.aotter.trek.admob.mediation.demo.databinding.ActivityAdmobNativeAdRecyclerviewViewBinding
+import com.aotter.trek.admob.mediation.demo.databinding.ItemAdmobNativeAdBinding
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdLoader
 import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.nativead.NativeAd
 
 class AdmobNativeAdRecyclerViewPageActivity : AppCompatActivity() {
 
@@ -58,7 +65,7 @@ class AdmobNativeAdRecyclerViewPageActivity : AppCompatActivity() {
 
         }
 
-        admobNativeAdAdapter.submitList(list.toList()){
+        admobNativeAdAdapter.submitList(list.toList()) {
             loadAdmobNativeAd()
         }
 
@@ -78,11 +85,11 @@ class AdmobNativeAdRecyclerViewPageActivity : AppCompatActivity() {
 
                     data.postId = nativeAd.hashCode()
 
-                    data.nativeAd = nativeAd
+                    data.adView = createAdView(nativeAd)
 
-                    list.add(1,data)
+                    list.add(1, data)
 
-                    admobNativeAdAdapter.submitList(list.toList()){
+                    admobNativeAdAdapter.submitList(list.toList()) {
 
                         loadAdmobNativeAd2()
 
@@ -141,9 +148,9 @@ class AdmobNativeAdRecyclerViewPageActivity : AppCompatActivity() {
 
                     data.postId = nativeAd.hashCode()
 
-                    data.nativeAd = nativeAd
+                    data.adView = createAdView(nativeAd)
 
-                    list.add(8,data)
+                    list.add(8, data)
 
                     admobNativeAdAdapter.submitList(list.toList())
 
@@ -183,6 +190,30 @@ class AdmobNativeAdRecyclerViewPageActivity : AppCompatActivity() {
             .build()
 
         adLoader.loadAd(adRequest)
+
+    }
+
+    private fun createAdView(nativeAd: NativeAd): View {
+
+        val adView = ItemAdmobNativeAdBinding.bind(
+            LayoutInflater.from(this)
+                .inflate(R.layout.item_admob_native_ad, null)
+        )
+
+        adView.advertiser.text = nativeAd.advertiser
+
+        adView.adBody.text = nativeAd.body
+
+        Glide.with(this)
+            .load(nativeAd.icon?.drawable)
+            .transition(DrawableTransitionOptions.withCrossFade())
+            .into(adView.adImg)
+
+        adView.nativeAdView.mediaView = adView.mediaView
+
+        adView.nativeAdView.setNativeAd(nativeAd)
+
+        return adView.root
 
     }
 
