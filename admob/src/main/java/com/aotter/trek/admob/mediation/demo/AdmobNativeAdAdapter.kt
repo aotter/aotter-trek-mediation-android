@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -18,7 +19,7 @@ class AdmobNativeAdAdapter(
     ListAdapter<AdmobLocalNativeAdData, RecyclerView.ViewHolder>(diffCallBack) {
 
     override fun getItemViewType(position: Int): Int {
-        return getItem(position).nativeAd?.let {
+        return getItem(position).adView?.let {
             0
         } ?: kotlin.run {
             1
@@ -31,7 +32,7 @@ class AdmobNativeAdAdapter(
             0 -> {
 
                 val view = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.item_admob_native_ad, parent, false)
+                    .inflate(R.layout.item_conteainer_native_ad, parent, false)
 
                 AdViewHolder(view)
 
@@ -79,45 +80,22 @@ class AdmobNativeAdAdapter(
 
     inner class AdViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        private val adTitle = itemView.findViewById<TextView>(R.id.adBody)
-
-        private val advertiser = itemView.findViewById<TextView>(R.id.advertiser)
-
-        private val adImg = itemView.findViewById<ImageView>(R.id.adImg)
-
-        private val nativeAdView =
-            itemView.findViewById<NativeAdView>(R.id.nativeAdView)
-
-        private val mediaView =
-            itemView.findViewById<MediaView>(R.id.mediaView)
-
+        private val container = itemView.findViewById<CardView>(R.id.container)
 
         fun bind(item: AdmobLocalNativeAdData) {
 
-            item.nativeAd?.let {nativeAd->
+            (item.adView?.parent as? ViewGroup)?.removeAllViews()
 
-                advertiser.text = nativeAd.advertiser
+            container.removeAllViews()
 
-                adTitle.text = nativeAd.headline
+            val lp = ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
 
-                Glide.with(itemView.context)
-                    .load(nativeAd.icon?.uri ?: "")
-                    .transition(DrawableTransitionOptions.withCrossFade())
-                    .into(adImg)
+            item.adView?.layoutParams = lp
 
-                nativeAdView.advertiserView = advertiser
-
-                nativeAdView.iconView = adImg
-
-                nativeAdView.headlineView = adTitle
-
-                mediaView.setImageScaleType(ImageView.ScaleType.FIT_XY)
-
-                nativeAdView.mediaView = mediaView
-
-                nativeAdView.setNativeAd(nativeAd)
-
-            }
+            container.addView(item.adView)
 
         }
 
