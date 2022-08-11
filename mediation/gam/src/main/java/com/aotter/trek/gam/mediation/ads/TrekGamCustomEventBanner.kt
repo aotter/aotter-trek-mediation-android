@@ -12,6 +12,7 @@ import com.aotter.trek.gam.mediation.TrekGamDataKey
 import com.aotter.trek.gam.mediation.extension.getVersion
 import com.google.android.gms.ads.mediation.*
 import org.json.JSONObject
+import java.util.concurrent.ConcurrentLinkedQueue
 
 
 class TrekGamCustomEventBanner : Adapter() {
@@ -25,7 +26,7 @@ class TrekGamCustomEventBanner : Adapter() {
         private const val SERVER_PARAMETER = "parameter"
         private const val PLACE_UID = "placeUid"
         private const val CLIENT_ID = "clientId"
-        private var trekBannerAdView: TrekBannerAdView? = null
+        private var concurrentLinkedQueue = ConcurrentLinkedQueue<TrekBannerAdView>()
     }
 
     override fun initialize(
@@ -92,20 +93,18 @@ class TrekGamCustomEventBanner : Adapter() {
 
                 Log.i(TAG, "contentTitle : $contentTitle")
 
+                val oldTrekBannerAdView = concurrentLinkedQueue.poll()
 
-                if (trekBannerAdView == null || trekBannerAdView?.childCount == 0) {
+                oldTrekBannerAdView?.destroy()
 
-                    trekBannerAdView = TrekBannerAdView(context, null)
+                TrekBannerAdView(context, null).apply {
 
-                }
+                    val trekGamCustomBannerEventLoader = TrekGamCustomBannerEventLoader(this)
 
-                trekBannerAdView?.apply {
+                    trekGamCustomBannerEventLoader.mediationAdLoadCallback = mediationAdLoadCallback
 
                     this.setAdListener(
-                        TrekGamCustomBannerEventLoader(
-                            this,
-                            mediationAdLoadCallback
-                        )
+                        trekGamCustomBannerEventLoader
                     )
 
                     val trekAdRequest = TrekAdRequest
@@ -120,6 +119,8 @@ class TrekGamCustomEventBanner : Adapter() {
                     this.setPlaceUid(placeUid)
 
                     this.loadAd(trekAdRequest)
+
+                    concurrentLinkedQueue.offer(this)
 
                 }
 

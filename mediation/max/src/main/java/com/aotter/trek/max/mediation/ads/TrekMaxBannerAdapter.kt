@@ -14,6 +14,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import java.util.concurrent.ConcurrentLinkedQueue
 
 class TrekMaxBannerAdapter(appLovinSdk: AppLovinSdk) : TrekMediationAdapterBase(appLovinSdk),
     MaxAdViewAdapter {
@@ -22,10 +23,8 @@ class TrekMaxBannerAdapter(appLovinSdk: AppLovinSdk) : TrekMediationAdapterBase(
 
     private var scope = CoroutineScope(Dispatchers.Main + SupervisorJob())
 
-    companion object {
-
-        private var trekBannerAdView: TrekBannerAdView? = null
-
+    companion object{
+        private var concurrentLinkedQueue = ConcurrentLinkedQueue<TrekBannerAdView>()
     }
 
     override fun loadAdViewAd(
@@ -78,19 +77,14 @@ class TrekMaxBannerAdapter(appLovinSdk: AppLovinSdk) : TrekMediationAdapterBase(
 
                 Log.i(TAG, "contentTitle : $contentTitle")
 
-                if (trekBannerAdView == null || trekBannerAdView?.childCount == 0) {
+                TrekBannerAdView(activity, null).apply {
 
-                    trekBannerAdView = TrekBannerAdView(activity, null)
+                    val trekMaxBannerAdapterLoader = TrekMaxBannerAdapterLoader(this)
 
-                }
-
-                trekBannerAdView?.apply {
+                    trekMaxBannerAdapterLoader.maxAdViewAdapterListener = maxAdViewAdapterListener
 
                     this.setAdListener(
-                        TrekMaxBannerAdapterLoader(
-                            this,
-                            maxAdViewAdapterListener
-                        )
+                        trekMaxBannerAdapterLoader
                     )
 
                     val trekAdRequest = TrekAdRequest
@@ -105,6 +99,8 @@ class TrekMaxBannerAdapter(appLovinSdk: AppLovinSdk) : TrekMediationAdapterBase(
                     this.setPlaceUid(placeUid)
 
                     this.loadAd(trekAdRequest)
+
+                    concurrentLinkedQueue.offer(this)
 
                 }
 
@@ -121,8 +117,9 @@ class TrekMaxBannerAdapter(appLovinSdk: AppLovinSdk) : TrekMediationAdapterBase(
 
     override fun onDestroy() {
 
-        // The lifecycle of TrekBannerAdView is automated.
-        // TrekBannerAdView was destroyed when page close currently.
+        val oldTrekBannerAdView = concurrentLinkedQueue.poll()
+
+        oldTrekBannerAdView?.destroy()
 
     }
 

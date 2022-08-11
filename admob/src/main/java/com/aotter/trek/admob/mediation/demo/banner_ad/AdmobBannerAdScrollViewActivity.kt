@@ -56,4 +56,11 @@ class AdmobBannerAdScrollViewActivity : AppCompatActivity() {
 
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+
+        viewBinding.bannerAdView.destroy()
+
+    }
+
 }

@@ -13,7 +13,6 @@ import com.google.android.gms.ads.mediation.MediationBannerAdCallback
 
 class TrekAdmobCustomBannerEventLoader(
     private val trekBannerAdView: TrekBannerAdView,
-    private val mediationAdLoadCallback: MediationAdLoadCallback<MediationBannerAd, MediationBannerAdCallback>
 ) : TrekAdListener, MediationBannerAd {
 
     private val TAG: String = TrekAdmobCustomBannerEventLoader::class.java.simpleName
@@ -22,30 +21,22 @@ class TrekAdmobCustomBannerEventLoader(
 
     private var mediationBannerAdCallback: MediationBannerAdCallback? = null
 
-    override fun onAdsFailedToLoad(messages: List<String>) {
-
-        val message = if (messages.isEmpty()) {
-            "Exception error."
-        } else {
-            messages[0]
+    var mediationAdLoadCallback: MediationAdLoadCallback<MediationBannerAd, MediationBannerAdCallback>? =
+        null
+        set(value) {
+            field = value
         }
 
-        mediationAdLoadCallback.onFailure(AdError(0, message, SDK_DOMAIN))
+    override fun onAdFailedToLoad(message: String) {
 
-        Log.e(TAG, "AdError: ${message}")
-    }
+        mediationAdLoadCallback?.onFailure(AdError(0, message, SDK_DOMAIN))
 
-    override fun onAdsLoaded(trekNativeAds: List<TrekNativeAd>) {
-
-        mediationBannerAdCallback = mediationAdLoadCallback.onSuccess(this)
-
-        Log.i(TAG, "AdLoaded success.")
-
+        Log.e(TAG, "AdError: $message")
     }
 
     override fun onAdLoaded(trekNativeAd: TrekNativeAd) {
 
-        mediationBannerAdCallback = mediationAdLoadCallback.onSuccess(this)
+        mediationBannerAdCallback = mediationAdLoadCallback?.onSuccess(this)
 
         Log.i(TAG, "AdLoaded success.")
 
@@ -68,6 +59,7 @@ class TrekAdmobCustomBannerEventLoader(
     }
 
     override fun getView(): View {
+
 
         return trekBannerAdView
 
