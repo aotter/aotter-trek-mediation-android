@@ -11,6 +11,7 @@ import com.aotter.trek.admob.mediation.TrekAdmobDataKey
 import com.aotter.trek.admob.mediation.extension.getVersion
 import com.google.android.gms.ads.mediation.*
 import org.json.JSONObject
+import java.util.concurrent.ConcurrentLinkedQueue
 
 
 class TrekAdmobCustomEventBanner : Adapter() {
@@ -24,7 +25,7 @@ class TrekAdmobCustomEventBanner : Adapter() {
         private const val SERVER_PARAMETER = "parameter"
         private const val PLACE_UID = "placeUid"
         private const val CLIENT_ID = "clientId"
-        private var trekBannerAdView: TrekBannerAdView? = null
+        private var concurrentLinkedQueue = ConcurrentLinkedQueue<TrekBannerAdView>()
     }
 
     override fun initialize(
@@ -92,20 +93,19 @@ class TrekAdmobCustomEventBanner : Adapter() {
 
                 Log.i(TAG, "contentTitle : $contentTitle")
 
+                val oldTrekBannerAdView = concurrentLinkedQueue.poll()
 
-                if (trekBannerAdView == null || trekBannerAdView?.childCount == 0) {
+                oldTrekBannerAdView?.destroy()
 
-                    trekBannerAdView = TrekBannerAdView(context, null)
+                TrekBannerAdView(context, null).apply {
 
-                }
+                    val trekAdmobCustomBannerEventLoader = TrekAdmobCustomBannerEventLoader(this)
 
-                trekBannerAdView?.apply {
+                    trekAdmobCustomBannerEventLoader.mediationAdLoadCallback =
+                        mediationAdLoadCallback
 
                     this.setAdListener(
-                        TrekAdmobCustomBannerEventLoader(
-                            this,
-                            mediationAdLoadCallback
-                        )
+                        trekAdmobCustomBannerEventLoader
                     )
 
                     val trekAdRequest = TrekAdRequest
@@ -120,6 +120,8 @@ class TrekAdmobCustomEventBanner : Adapter() {
                     this.setPlaceUid(placeUid)
 
                     this.loadAd(trekAdRequest)
+
+                    concurrentLinkedQueue.offer(this)
 
                 }
 
