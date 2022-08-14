@@ -1,5 +1,4 @@
-# aotter-trek-mediation-android
-Trek mediation
+# Trek mediation
 
 ### Trek AdMob Mediation Document
 https://trek.gitbook.io/aottertrek-sdk-doc/android/admob-mediation
