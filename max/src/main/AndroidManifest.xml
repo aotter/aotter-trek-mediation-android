@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.aotter.trek.max.mediation.demo">
+    package="com.aotter.max.mediation.demo">
 
     <application
         android:allowBackup="true"
@@ -12,26 +12,23 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.aotter.trek"
-        tools:targetApi="s">
+        android:theme="@style/Theme.aotter.trek">
 
-
-        <meta-data
-            android:name="applovin.sdk.key"
-            android:value="UHMIs5HKBAm1I_J2Ii11mRdSBU9BPoz7tADXqa7KBKSdD7NO_vC4ZPiO_z2sXeygrA-vDi1uGQ4lxRVx3Jz3FK" />
+        <meta-data android:name="applovin.sdk.key"
+            android:value="UHMIs5HKBAm1I_J2Ii11mRdSBU9BPoz7tADXqa7KBKSdD7NO_vC4ZPiO_z2sXeygrA-vDi1uGQ4lxRVx3Jz3FK"/>
 
         <activity
-            android:name=".banner_ad.MaxBannerAdActivity"
+            android:name="com.aotter.max.mediation.demo.banner_ad.MaxBannerAdActivity"
             android:exported="false" />
         <activity
-            android:name=".native_ad.MaxNativeAdRecyclerViewPageActivity"
+            android:name="com.aotter.max.mediation.demo.native_ad.MaxNativeAdRecyclerViewPageActivity"
             android:exported="false" />
         <activity
-            android:name=".native_ad.MaxNativeAdScrollViewActivity"
+            android:name="com.aotter.max.mediation.demo.native_ad.MaxNativeAdScrollViewActivity"
             android:exported="false" />
 
         <activity
-            android:name=".MaxActivity"
+            android:name="com.aotter.max.mediation.demo.MaxActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

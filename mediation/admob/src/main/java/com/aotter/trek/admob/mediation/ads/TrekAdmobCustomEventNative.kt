@@ -22,6 +22,7 @@ class TrekAdmobCustomEventNative : Adapter() {
         private const val SERVER_PARAMETER = "parameter"
         private const val PLACE_UID = "placeUid"
         private const val CLIENT_ID = "clientId"
+        private const val CLASS_NAME = "class_name"
     }
 
     override fun initialize(
@@ -30,7 +31,46 @@ class TrekAdmobCustomEventNative : Adapter() {
         mediationConfigurations: MutableList<MediationConfiguration>
     ) {
 
-        return
+        try {
+
+            mediationConfigurations.forEach { mediationConfiguration ->
+
+                val className = TrekAdmobCustomEventNative::class.java.name
+
+                val serverParameters = mediationConfiguration.serverParameters
+
+                if (serverParameters.getString(CLASS_NAME) == className) {
+
+                    val serverParameter = JSONObject(
+                        mediationConfiguration.serverParameters.getString(
+                            SERVER_PARAMETER
+                        ) ?: ""
+                    )
+
+                    val clientId = serverParameter.getString(CLIENT_ID)
+
+                    if (clientId.isNullOrEmpty()) {
+                        throw IllegalArgumentException(NEED_CLIENT_ID_TAG)
+                    }
+
+                    Log.i(TAG, "clientId : $clientId")
+
+                    TrekAds.initialize(
+                        context,
+                        clientId
+                    ) {
+                        initializationCompleteCallback.onInitializationSucceeded()
+                    }
+
+                }
+
+            }
+
+        } catch (e: Exception) {
+
+            initializationCompleteCallback.onInitializationFailed(e.toString())
+
+        }
 
     }
 
@@ -51,65 +91,50 @@ class TrekAdmobCustomEventNative : Adapter() {
 
             val placeUid = serverParameterDto.getString(PLACE_UID)
 
-            val clientId = serverParameterDto.getString(CLIENT_ID)
-
-            if (clientId.isEmpty()) {
-                throw IllegalArgumentException(NEED_CLIENT_ID_TAG)
-            }
-
             if (placeUid.isNullOrEmpty()) {
                 throw IllegalArgumentException(NEED_PLACE_UUID_TAG)
             }
 
-            TrekAds.initialize(
-                context,
-                clientId
-            ) {
+            val category =
+                mediationNativeAdConfiguration.mediationExtras.getString(TrekAdmobDataKey.CATEGORY)
+                    ?: ""
 
-                val category =
-                    mediationNativeAdConfiguration.mediationExtras.getString(TrekAdmobDataKey.CATEGORY)
-                        ?: ""
+            val contentUrl =
+                mediationNativeAdConfiguration.mediationExtras.getString(TrekAdmobDataKey.CONTENT_URL)
+                    ?: ""
 
-                val contentUrl =
-                    mediationNativeAdConfiguration.mediationExtras.getString(TrekAdmobDataKey.CONTENT_URL)
-                        ?: ""
+            val contentTitle =
+                mediationNativeAdConfiguration.mediationExtras.getString(TrekAdmobDataKey.CONTENT_TITLE)
+                    ?: ""
 
-                val contentTitle =
-                    mediationNativeAdConfiguration.mediationExtras.getString(TrekAdmobDataKey.CONTENT_TITLE)
-                        ?: ""
+            Log.i(TAG, "placeUid : $placeUid")
 
-                Log.i(TAG, "clientId : $clientId")
+            Log.i(TAG, "category : $category")
 
-                Log.i(TAG, "placeUid : $placeUid")
+            Log.i(TAG, "contentUrl : $contentUrl")
 
-                Log.i(TAG, "category : $category")
+            Log.i(TAG, "contentTitle : $contentTitle")
 
-                Log.i(TAG, "contentUrl : $contentUrl")
-
-                Log.i(TAG, "contentTitle : $contentTitle")
-
-                val trekAdLoader = TrekAdLoader
-                    .Builder(context, placeUid)
-                    .withAdListener(
-                        TrekAdmobCustomNativeEventLoader(
-                            context,
-                            mediationAdLoadCallback
-                        )
+            val trekAdLoader = TrekAdLoader
+                .Builder(context, placeUid)
+                .withAdListener(
+                    TrekAdmobCustomNativeEventLoader(
+                        context,
+                        mediationAdLoadCallback
                     )
-                    .build()
+                )
+                .build()
 
-                val trekAdRequest = TrekAdRequest
-                    .Builder()
-                    .setCategory(category)
-                    .setContentUrl(contentUrl)
-                    .setContentTitle(contentTitle)
-                    .setMediationVersion(BuildConfig.MEDIATION_VERSION)
-                    .setMediationVersionCode(BuildConfig.MEDIATION_VERSION_CODE.toInt())
-                    .build()
+            val trekAdRequest = TrekAdRequest
+                .Builder()
+                .setCategory(category)
+                .setContentUrl(contentUrl)
+                .setContentTitle(contentTitle)
+                .setMediationVersion(BuildConfig.MEDIATION_VERSION)
+                .setMediationVersionCode(BuildConfig.MEDIATION_VERSION_CODE.toInt())
+                .build()
 
-                trekAdLoader.loadAd(trekAdRequest)
-
-            }
+            trekAdLoader.loadAd(trekAdRequest)
 
 
         } catch (e: Exception) {

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.aotter.trek.admob.mediation.demo">
+    package="com.aotter.admob.mediation.demo">
 
     <application
         android:allowBackup="true"
@@ -20,16 +20,16 @@
             android:value="UHMIs5HKBAm1I_J2Ii11mRdSBU9BPoz7tADXqa7KBKSdD7NO_vC4ZPiO_z2sXeygrA-vDi1uGQ4lxRVx3Jz3FK" />
 
 
-        <activity android:name=".native_ad.AdmobNativeAdRecyclerViewPageActivity" />
-        <activity android:name=".banner_ad.AdmobBannerAdScrollViewActivity" />
-        <activity android:name=".native_ad.AdmobNativeAdScrollViewActivity" />
+        <activity android:name="com.aotter.admob.mediation.demo.native_ad.AdmobNativeAdRecyclerViewPageActivity" />
+        <activity android:name="com.aotter.admob.mediation.demo.banner_ad.AdmobBannerAdScrollViewActivity" />
+        <activity android:name="com.aotter.admob.mediation.demo.native_ad.AdmobNativeAdScrollViewActivity" />
 
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-8836593984677243~2250388465" />
 
         <activity
-            android:name=".AdmobActivity"
+            android:name="com.aotter.admob.mediation.demo.AdmobActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

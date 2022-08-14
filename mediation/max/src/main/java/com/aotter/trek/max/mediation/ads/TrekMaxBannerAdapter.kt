@@ -42,16 +42,10 @@ class TrekMaxBannerAdapter(appLovinSdk: AppLovinSdk) : TrekMediationAdapterBase(
 
                 Log.i(TAG, "trekParameters : $trekParameters")
 
-                val clientId = trekParameters.clientId
-
                 val placeUid = trekParameters.placeUid
 
                 if (activity == null) {
                     throw NullPointerException(NEED_CORRECT_CONTEXT)
-                }
-
-                if (clientId.isEmpty()) {
-                    throw IllegalArgumentException(NEED_CLIENT_ID_TAG)
                 }
 
                 if (placeUid.isEmpty()) {
@@ -66,8 +60,6 @@ class TrekMaxBannerAdapter(appLovinSdk: AppLovinSdk) : TrekMediationAdapterBase(
 
                 val contentTitle =
                     trekParameters.contentTitle
-
-                Log.i(TAG, "clientId : $clientId")
 
                 Log.i(TAG, "placeUid : $placeUid")
 

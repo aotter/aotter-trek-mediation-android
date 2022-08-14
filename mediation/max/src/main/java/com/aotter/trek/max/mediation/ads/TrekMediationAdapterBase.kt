@@ -16,6 +16,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import org.json.JSONObject
 
 abstract class TrekMediationAdapterBase(appLovinSdk: AppLovinSdk) :
     MediationAdapterBase(appLovinSdk) {
@@ -24,8 +25,12 @@ abstract class TrekMediationAdapterBase(appLovinSdk: AppLovinSdk) :
 
     private var scope = CoroutineScope(Dispatchers.Main + SupervisorJob())
 
+    private val adapters =
+        listOf(TrekMaxBannerAdapter::class.java.name, TrekMaxNativeAdapter::class.java.name)
+
     companion object {
-        private const val CLIENT_ID = "clientId"
+        private const val APP_ID = "app_id"
+        private const val ADAPTER_CLASS = "adapter_class"
         const val NEED_CORRECT_CONTEXT =
             "Require a more restrictive Context that is of type Activity or Fragment. / Context not null. "
         const val NEED_PLACE_UUID_TAG = "Not found placeUid or empty string."
@@ -40,21 +45,45 @@ abstract class TrekMediationAdapterBase(appLovinSdk: AppLovinSdk) :
 
         scope.launch {
 
-            val clientId =
-                maxAdapterInitializationParameters?.customParameters?.getString(CLIENT_ID) ?: ""
+            try {
 
-            if (activity == null) {
-                throw NullPointerException(NEED_CORRECT_CONTEXT)
-            }
+                if (activity == null) {
+                    throw NullPointerException(NEED_CORRECT_CONTEXT)
+                }
 
-            TrekAds.initialize(activity,clientId) {
+                val adapterClass =
+                    maxAdapterInitializationParameters?.serverParameters?.getString(ADAPTER_CLASS) ?: ""
+
+                if (adapterClass in adapters) {
+
+                    val clientId =
+                        maxAdapterInitializationParameters?.serverParameters?.getString(APP_ID) ?: ""
+
+                    if (clientId.isEmpty()) {
+                        throw IllegalArgumentException(NEED_CLIENT_ID_TAG)
+                    }
+
+                    Log.i(TAG, "clientId : $clientId")
+
+                    TrekAds.initialize(activity, clientId) {
+
+                        onCompletionListener?.onCompletion(
+                            MaxAdapter.InitializationStatus.INITIALIZED_SUCCESS,
+                            "TrekAds initialize success."
+                        )
+
+                        Log.i(TAG, "TrekAds initialize success.")
+
+                    }
+
+                }
+
+            }catch (e:Exception){
 
                 onCompletionListener?.onCompletion(
-                    MaxAdapter.InitializationStatus.INITIALIZED_SUCCESS,
-                    null
+                    MaxAdapter.InitializationStatus.INITIALIZED_FAILURE,
+                    e.toString()
                 )
-
-                Log.i(TAG, "TrekAds initialize success.")
 
             }
 
@@ -81,8 +110,6 @@ abstract class TrekMediationAdapterBase(appLovinSdk: AppLovinSdk) :
 
     fun getTrekParameters(maxAdapterResponseParameters: MaxAdapterResponseParameters?): TrekParameters {
 
-        var clientId = ""
-
         var placeUid = ""
 
         var category = ""
@@ -92,8 +119,6 @@ abstract class TrekMediationAdapterBase(appLovinSdk: AppLovinSdk) :
         var contentTitle = ""
 
         maxAdapterResponseParameters?.apply {
-
-            clientId = this.customParameters.getString(CLIENT_ID) ?: ""
 
             placeUid = this.thirdPartyAdPlacementId ?: ""
 
@@ -106,7 +131,7 @@ abstract class TrekMediationAdapterBase(appLovinSdk: AppLovinSdk) :
 
         }
 
-        return TrekParameters(clientId, placeUid, category, contentUrl, contentTitle)
+        return TrekParameters(placeUid, category, contentUrl, contentTitle)
 
     }
 
