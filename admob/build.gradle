@@ -11,7 +11,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.aotter.trek.admob.mediation.demo"
+        applicationId "com.aotter.admob.mediation.demo"
         minSdk 21
         targetSdk 32
         versionCode 1

@@ -16,7 +16,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import java.util.concurrent.ConcurrentLinkedQueue
 
-class TrekMaxBannerAdapter(appLovinSdk: AppLovinSdk) : TrekMediationAdapterBase(appLovinSdk),
+class TrekMaxBannerAdapter(appLovinSdk: AppLovinSdk) : TrekMaxAdapterBase(appLovinSdk),
     MaxAdViewAdapter {
 
     private var TAG: String = TrekMaxBannerAdapter::class.java.simpleName
@@ -42,16 +42,10 @@ class TrekMaxBannerAdapter(appLovinSdk: AppLovinSdk) : TrekMediationAdapterBase(
 
                 Log.i(TAG, "trekParameters : $trekParameters")
 
-                val clientId = trekParameters.clientId
-
                 val placeUid = trekParameters.placeUid
 
                 if (activity == null) {
                     throw NullPointerException(NEED_CORRECT_CONTEXT)
-                }
-
-                if (clientId.isEmpty()) {
-                    throw IllegalArgumentException(NEED_CLIENT_ID_TAG)
                 }
 
                 if (placeUid.isEmpty()) {
@@ -67,8 +61,6 @@ class TrekMaxBannerAdapter(appLovinSdk: AppLovinSdk) : TrekMediationAdapterBase(
                 val contentTitle =
                     trekParameters.contentTitle
 
-                Log.i(TAG, "clientId : $clientId")
-
                 Log.i(TAG, "placeUid : $placeUid")
 
                 Log.i(TAG, "category : $category")
@@ -76,6 +68,18 @@ class TrekMaxBannerAdapter(appLovinSdk: AppLovinSdk) : TrekMediationAdapterBase(
                 Log.i(TAG, "contentUrl : $contentUrl")
 
                 Log.i(TAG, "contentTitle : $contentTitle")
+
+                val iterator= concurrentLinkedQueue.iterator()
+
+                while (iterator.hasNext()){
+
+                    val trekBannerAdView = concurrentLinkedQueue.poll()
+
+                    trekBannerAdView?.restartImpression()
+
+                    iterator.next()
+
+                }
 
                 TrekBannerAdView(activity, null).apply {
 
@@ -117,9 +121,6 @@ class TrekMaxBannerAdapter(appLovinSdk: AppLovinSdk) : TrekMediationAdapterBase(
 
     override fun onDestroy() {
 
-        val oldTrekBannerAdView = concurrentLinkedQueue.poll()
-
-        oldTrekBannerAdView?.destroy()
 
     }
 
