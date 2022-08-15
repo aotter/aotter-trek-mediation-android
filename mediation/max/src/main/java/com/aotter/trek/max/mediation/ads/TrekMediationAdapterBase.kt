@@ -47,10 +47,6 @@ abstract class TrekMediationAdapterBase(appLovinSdk: AppLovinSdk) :
 
             try {
 
-                if (activity == null) {
-                    throw NullPointerException(NEED_CORRECT_CONTEXT)
-                }
-
                 val adapterClass =
                     maxAdapterInitializationParameters?.serverParameters?.getString(ADAPTER_CLASS) ?: ""
 
@@ -65,7 +61,7 @@ abstract class TrekMediationAdapterBase(appLovinSdk: AppLovinSdk) :
 
                     Log.i(TAG, "clientId : $clientId")
 
-                    TrekAds.initialize(activity, clientId) {
+                    TrekAds.initialize(applicationContext, clientId) {
 
                         onCompletionListener?.onCompletion(
                             MaxAdapter.InitializationStatus.INITIALIZED_SUCCESS,
