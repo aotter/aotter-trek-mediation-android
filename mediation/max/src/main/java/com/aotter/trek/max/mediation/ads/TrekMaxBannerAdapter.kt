@@ -69,6 +69,18 @@ class TrekMaxBannerAdapter(appLovinSdk: AppLovinSdk) : TrekMediationAdapterBase(
 
                 Log.i(TAG, "contentTitle : $contentTitle")
 
+                val iterator= concurrentLinkedQueue.iterator()
+
+                while (iterator.hasNext()){
+
+                    val trekBannerAdView = concurrentLinkedQueue.poll()
+
+                    trekBannerAdView?.restartImpression()
+
+                    iterator.next()
+
+                }
+
                 TrekBannerAdView(activity, null).apply {
 
                     val trekMaxBannerAdapterLoader = TrekMaxBannerAdapterLoader(this)
@@ -109,9 +121,6 @@ class TrekMaxBannerAdapter(appLovinSdk: AppLovinSdk) : TrekMediationAdapterBase(
 
     override fun onDestroy() {
 
-        val oldTrekBannerAdView = concurrentLinkedQueue.poll()
-
-        oldTrekBannerAdView?.destroy()
 
     }
 
