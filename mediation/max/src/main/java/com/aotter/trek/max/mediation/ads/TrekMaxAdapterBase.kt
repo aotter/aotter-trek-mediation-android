@@ -3,7 +3,6 @@ package com.aotter.trek.max.mediation.ads
 import android.app.Activity
 import android.util.Log
 import com.aotter.net.trek.TrekAds
-import com.aotter.net.utils.TrekSdkSettingsUtils
 import com.aotter.trek.max.mediation.BuildConfig
 import com.aotter.trek.max.mediation.TrekMaxDataKey
 import com.aotter.trek.max.mediation.TrekParameters
@@ -16,12 +15,11 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
-import org.json.JSONObject
 
-abstract class TrekMediationAdapterBase(appLovinSdk: AppLovinSdk) :
+abstract class TrekMaxAdapterBase(appLovinSdk: AppLovinSdk) :
     MediationAdapterBase(appLovinSdk) {
 
-    private var TAG: String = TrekMediationAdapterBase::class.java.simpleName
+    private var TAG: String = TrekMaxAdapterBase::class.java.simpleName
 
     private var scope = CoroutineScope(Dispatchers.Main + SupervisorJob())
 

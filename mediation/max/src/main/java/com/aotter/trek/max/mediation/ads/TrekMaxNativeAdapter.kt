@@ -10,7 +10,7 @@ import com.applovin.mediation.adapter.listeners.MaxNativeAdAdapterListener
 import com.applovin.mediation.adapter.parameters.MaxAdapterResponseParameters
 import com.applovin.sdk.AppLovinSdk
 
-class TrekMaxNativeAdapter(appLovinSdk: AppLovinSdk) : TrekMediationAdapterBase(appLovinSdk) {
+class TrekMaxNativeAdapter(appLovinSdk: AppLovinSdk) : TrekMaxAdapterBase(appLovinSdk) {
 
     private var TAG: String = TrekMaxNativeAdapter::class.java.simpleName
 
