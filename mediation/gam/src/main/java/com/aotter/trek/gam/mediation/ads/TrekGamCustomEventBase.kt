@@ -82,7 +82,7 @@ abstract class TrekGamCustomEventBase : Adapter() {
             }
 
         } catch (e: Exception) {
-            Log.i("dsadsadsa", "${e.toString()}")
+
             initializationCompleteCallback.onInitializationFailed(e.toString())
 
         }
