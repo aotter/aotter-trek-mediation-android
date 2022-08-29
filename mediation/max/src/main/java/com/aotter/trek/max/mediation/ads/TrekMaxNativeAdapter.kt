@@ -2,6 +2,7 @@ package com.aotter.trek.max.mediation.ads
 
 import android.app.Activity
 import android.util.Log
+import com.aotter.net.trek.TrekAds
 import com.aotter.net.trek.ads.TrekAdLoader
 import com.aotter.net.trek.ads.TrekAdRequest
 import com.aotter.net.trek.ads.ad_view_binding.TrekAdViewBinder
@@ -26,10 +27,16 @@ class TrekMaxNativeAdapter(appLovinSdk: AppLovinSdk) : TrekMaxAdapterBase(appLov
 
             val trekParameters = getTrekParameters(maxAdapterResponseParameters)
 
+            val clientId = trekParameters.clientId
+
             val placeUid = trekParameters.placeUid
 
             if (activity == null) {
                 throw NullPointerException(NEED_CORRECT_CONTEXT)
+            }
+
+            if (clientId.isEmpty()) {
+                throw IllegalArgumentException(NEED_CLIENT_ID_TAG)
             }
 
             if (placeUid.isEmpty()) {
@@ -45,6 +52,8 @@ class TrekMaxNativeAdapter(appLovinSdk: AppLovinSdk) : TrekMaxAdapterBase(appLov
             val contentTitle =
                 trekParameters.contentTitle
 
+            Log.i(TAG, "clientId : $clientId")
+
             Log.i(TAG, "placeUid : $placeUid")
 
             Log.i(TAG, "category : $category")
@@ -53,29 +62,32 @@ class TrekMaxNativeAdapter(appLovinSdk: AppLovinSdk) : TrekMaxAdapterBase(appLov
 
             Log.i(TAG, "contentTitle : $contentTitle")
 
-            trekMaxNativeAdapterLoader = TrekMaxNativeAdapterLoader(
-                activity,
-                maxNativeAdAdapterListener
-            )
+            TrekAds.initialize(activity, clientId) {
 
-            val trekAdLoader = TrekAdLoader
-                .Builder(activity, trekParameters.placeUid)
-                .withAdListener(
-                    trekMaxNativeAdapterLoader
+                trekMaxNativeAdapterLoader = TrekMaxNativeAdapterLoader(
+                    activity,
+                    maxNativeAdAdapterListener
                 )
-                .build()
 
-            val trekAdRequest = TrekAdRequest
-                .Builder()
-                .setCategory(trekParameters.category)
-                .setContentUrl(trekParameters.contentUrl)
-                .setContentTitle(trekParameters.contentTitle)
-                .setMediationVersion(BuildConfig.MEDIATION_VERSION)
-                .setMediationVersionCode(BuildConfig.MEDIATION_VERSION_CODE.toInt())
-                .build()
+                val trekAdLoader = TrekAdLoader
+                    .Builder(activity, trekParameters.placeUid)
+                    .withAdListener(
+                        trekMaxNativeAdapterLoader
+                    )
+                    .build()
 
-            trekAdLoader.loadAd(trekAdRequest)
+                val trekAdRequest = TrekAdRequest
+                    .Builder()
+                    .setCategory(trekParameters.category)
+                    .setContentUrl(trekParameters.contentUrl)
+                    .setContentTitle(trekParameters.contentTitle)
+                    .setMediationVersion(BuildConfig.MEDIATION_VERSION)
+                    .setMediationVersionCode(BuildConfig.MEDIATION_VERSION_CODE.toInt())
+                    .build()
 
+                trekAdLoader.loadAd(trekAdRequest)
+
+            }
 
         } catch (e: Exception) {
 

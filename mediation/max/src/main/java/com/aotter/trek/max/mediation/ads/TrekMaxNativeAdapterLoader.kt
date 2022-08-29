@@ -121,15 +121,10 @@ class TrekMaxNativeAdapterLoader(
 
             maxNativeAdView?.let { maxNativeAdView ->
 
-                val trekMediaView = maxNativeAdView.mediaContentViewGroup?.let {
-
-                    (mediaView as? TrekMediaView)?.let { trekMediaView ->
-
-                        trekMediaView
-
-                    }
-
-                }
+                val trekMediaView: TrekMediaView? =
+                    maxNativeAdView.mediaContentViewGroup?.findViewWithTag(
+                        trekMediaView.tag
+                    )
 
                 TrekAdViewBinder
                     .registerAdView(maxNativeAdView, trekMediaView, trekNativeAd)

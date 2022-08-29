@@ -143,14 +143,8 @@ class TrekGamUnifiedNativeAdMapper(private val context: Context) : UnifiedNative
 
                 }
 
-                var mediaView: TrekMediaView? = null
-
-                nativeAdView.mediaView?.forEach { view ->
-                    (view as? TrekMediaView)?.let { trekMediaView ->
-                        mediaView = trekMediaView
-                        return@forEach
-                    }
-                }
+                val mediaView: TrekMediaView? =
+                    nativeAdView.mediaView?.findViewWithTag(trekMediaView.tag)
 
                 TrekAdViewBinder
                     .registerAdView(nativeAdView, mediaView, trekNativeAd)

@@ -85,7 +85,7 @@ class AdmobNativeAdRecyclerViewPageActivity : AppCompatActivity() {
 
                     data.postId = nativeAd.hashCode()
 
-                    data.adView = createAdView(nativeAd)
+                    data.adView = createAdView(nativeAd,true)
 
                     list.add(1, data)
 
@@ -148,7 +148,7 @@ class AdmobNativeAdRecyclerViewPageActivity : AppCompatActivity() {
 
                     data.postId = nativeAd.hashCode()
 
-                    data.adView = createAdView(nativeAd)
+                    data.adView = createAdView(nativeAd,false)
 
                     list.add(8, data)
 
@@ -193,7 +193,7 @@ class AdmobNativeAdRecyclerViewPageActivity : AppCompatActivity() {
 
     }
 
-    private fun createAdView(nativeAd: NativeAd): View {
+    private fun createAdView(nativeAd: NativeAd,isMedia:Boolean): View {
 
         val adView = ItemAdmobNativeAdBinding.bind(
             LayoutInflater.from(this)
@@ -209,7 +209,13 @@ class AdmobNativeAdRecyclerViewPageActivity : AppCompatActivity() {
             .transition(DrawableTransitionOptions.withCrossFade())
             .into(adView.adImg)
 
-        adView.nativeAdView.mediaView = adView.mediaView
+        val mediaView = if (isMedia) {
+            adView.mediaView
+        } else {
+            null
+        }
+
+        adView.nativeAdView.mediaView = mediaView
 
         adView.nativeAdView.setNativeAd(nativeAd)
 
