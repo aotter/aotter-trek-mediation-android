@@ -2,6 +2,7 @@ package com.aotter.trek.gam.mediation.ads
 
 
 import android.util.Log
+import com.aotter.net.trek.TrekAds
 import com.aotter.net.trek.ads.TrekAdLoader
 import com.aotter.net.trek.ads.TrekAdRequest
 import com.aotter.trek.gam.mediation.BuildConfig
@@ -13,12 +14,6 @@ class TrekGamCustomEventNative : TrekGamCustomEventBase() {
 
     private var TAG: String = TrekGamCustomEventNative::class.java.simpleName
 
-    companion object {
-        private const val NEED_PLACE_UUID_TAG = "Not found placeUid or empty string."
-        private const val SERVER_PARAMETER = "parameter"
-        private const val PLACE_UID = "placeUid"
-    }
-
     override fun loadNativeAd(
         mediationNativeAdConfiguration: MediationNativeAdConfiguration,
         mediationAdLoadCallback: MediationAdLoadCallback<UnifiedNativeAdMapper, MediationNativeAdCallback>
@@ -26,15 +21,21 @@ class TrekGamCustomEventNative : TrekGamCustomEventBase() {
 
         try {
 
-            val context = mediationNativeAdConfiguration.context
-
-            val serverParameterDto = JSONObject(
+            val serverParameter = JSONObject(
                 mediationNativeAdConfiguration.serverParameters.getString(
                     SERVER_PARAMETER
                 ) ?: ""
             )
 
-            val placeUid = serverParameterDto.getString(PLACE_UID)
+            val clientId = serverParameter.getString(CLIENT_ID)
+
+            val placeUid = serverParameter.getString(PLACE_UID)
+
+            val context = mediationNativeAdConfiguration.context
+
+            if (clientId.isNullOrEmpty()) {
+                throw IllegalArgumentException(NEED_CLIENT_ID_TAG)
+            }
 
             if (placeUid.isNullOrEmpty()) {
                 throw IllegalArgumentException(NEED_PLACE_UUID_TAG)
@@ -52,6 +53,8 @@ class TrekGamCustomEventNative : TrekGamCustomEventBase() {
                 mediationNativeAdConfiguration.mediationExtras.getString(TrekGamDataKey.CONTENT_TITLE)
                     ?: ""
 
+            Log.i(TAG, "clientId : $clientId")
+
             Log.i(TAG, "placeUid : $placeUid")
 
             Log.i(TAG, "category : $category")
@@ -60,27 +63,33 @@ class TrekGamCustomEventNative : TrekGamCustomEventBase() {
 
             Log.i(TAG, "contentTitle : $contentTitle")
 
-            val trekAdLoader = TrekAdLoader
-                .Builder(context, placeUid)
-                .withAdListener(
-                    TrekGamCustomNativeEventLoader(
-                        context,
-                        mediationAdLoadCallback
+            TrekAds.initialize(
+                context.applicationContext,
+                clientId
+            ) {
+
+                val trekAdLoader = TrekAdLoader
+                    .Builder(context, placeUid)
+                    .withAdListener(
+                        TrekGamCustomNativeEventLoader(
+                            context,
+                            mediationAdLoadCallback
+                        )
                     )
-                )
-                .build()
+                    .build()
 
-            val trekAdRequest = TrekAdRequest
-                .Builder()
-                .setCategory(category)
-                .setContentUrl(contentUrl)
-                .setContentTitle(contentTitle)
-                .setMediationVersion(BuildConfig.MEDIATION_VERSION)
-                .setMediationVersionCode(BuildConfig.MEDIATION_VERSION_CODE.toInt())
-                .build()
+                val trekAdRequest = TrekAdRequest
+                    .Builder()
+                    .setCategory(category)
+                    .setContentUrl(contentUrl)
+                    .setContentTitle(contentTitle)
+                    .setMediationVersion(BuildConfig.MEDIATION_VERSION)
+                    .setMediationVersionCode(BuildConfig.MEDIATION_VERSION_CODE.toInt())
+                    .build()
 
-            trekAdLoader.loadAd(trekAdRequest)
+                trekAdLoader.loadAd(trekAdRequest)
 
+            }
 
         } catch (e: Exception) {
 

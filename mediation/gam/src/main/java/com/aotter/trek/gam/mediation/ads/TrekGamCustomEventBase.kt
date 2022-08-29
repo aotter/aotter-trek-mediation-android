@@ -15,18 +15,13 @@ abstract class TrekGamCustomEventBase : Adapter() {
 
     private var TAG: String = TrekGamCustomEventBase::class.java.simpleName
 
-    companion object {
-        private const val NEED_CLIENT_ID_TAG = "Not found client id or empty string."
-        private const val SERVER_PARAMETER = "parameter"
-        private const val CLIENT_ID = "clientId"
-        private const val CLASS_NAME = "class_name"
+    companion object{
+        const val NEED_PLACE_UUID_TAG = "Not found placeUid or empty string."
+        const val NEED_CLIENT_ID_TAG = "Not found client id or empty string."
+        const val SERVER_PARAMETER = "parameter"
+        const val PLACE_UID = "placeUid"
+        const val CLIENT_ID = "clientId"
     }
-
-    private val adapters =
-        listOf(
-            TrekGamCustomEventNative::class.java.name,
-            TrekGamCustomEventBanner::class.java.name
-        )
 
     override fun getSDKVersionInfo(): VersionInfo {
 
@@ -45,47 +40,6 @@ abstract class TrekGamCustomEventBase : Adapter() {
         initializationCompleteCallback: InitializationCompleteCallback,
         mediationConfigurations: MutableList<MediationConfiguration>
     ) {
-
-        try {
-
-            mediationConfigurations.forEach { mediationConfiguration ->
-
-                val serverParameters = mediationConfiguration.serverParameters
-
-                val adapterClass = serverParameters.getString(CLASS_NAME) ?: ""
-
-                if (adapterClass in adapters) {
-
-                    val serverParameter = JSONObject(
-                        mediationConfiguration.serverParameters.getString(
-                            SERVER_PARAMETER
-                        ) ?: ""
-                    )
-
-                    val clientId = serverParameter.getString(CLIENT_ID)
-
-                    if (clientId.isNullOrEmpty()) {
-                        throw IllegalArgumentException(NEED_CLIENT_ID_TAG)
-                    }
-
-                    Log.i(TAG, "clientId : $clientId")
-
-                    TrekAds.initialize(
-                        context.applicationContext,
-                        clientId
-                    ) {
-                        initializationCompleteCallback.onInitializationSucceeded()
-                    }
-
-                }
-
-            }
-
-        } catch (e: Exception) {
-
-            initializationCompleteCallback.onInitializationFailed(e.toString())
-
-        }
 
     }
 
