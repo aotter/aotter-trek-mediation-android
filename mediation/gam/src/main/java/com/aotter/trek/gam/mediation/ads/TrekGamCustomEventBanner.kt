@@ -2,6 +2,7 @@ package com.aotter.trek.gam.mediation.ads
 
 
 import android.util.Log
+import com.aotter.net.trek.TrekAds
 import com.aotter.net.trek.ads.TrekAdRequest
 import com.aotter.net.trek.ads.TrekBannerAdView
 import com.aotter.trek.gam.mediation.BuildConfig
@@ -16,11 +17,9 @@ class TrekGamCustomEventBanner : TrekGamCustomEventBase() {
     private var TAG: String = TrekGamCustomEventBanner::class.java.simpleName
 
     companion object {
-        private const val NEED_PLACE_UUID_TAG = "Not found placeUid or empty string."
-        private const val SERVER_PARAMETER = "parameter"
-        private const val PLACE_UID = "placeUid"
         private var concurrentLinkedQueue = ConcurrentLinkedQueue<TrekBannerAdView>()
     }
+
 
     override fun loadBannerAd(
         mediationNativeAdConfiguration: MediationBannerAdConfiguration,
@@ -35,9 +34,15 @@ class TrekGamCustomEventBanner : TrekGamCustomEventBase() {
                 ) ?: ""
             )
 
+            val clientId = serverParameter.getString(CLIENT_ID)
+
             val placeUid = serverParameter.getString(PLACE_UID)
 
             val context = mediationNativeAdConfiguration.context
+
+            if (clientId.isNullOrEmpty()) {
+                throw IllegalArgumentException(NEED_CLIENT_ID_TAG)
+            }
 
             if (placeUid.isNullOrEmpty()) {
                 throw IllegalArgumentException(NEED_PLACE_UUID_TAG)
@@ -55,6 +60,8 @@ class TrekGamCustomEventBanner : TrekGamCustomEventBase() {
                 mediationNativeAdConfiguration.mediationExtras.getString(TrekGamDataKey.CONTENT_TITLE)
                     ?: ""
 
+            Log.i(TAG, "clientId : $clientId")
+
             Log.i(TAG, "placeUid : $placeUid")
 
             Log.i(TAG, "category : $category")
@@ -63,39 +70,44 @@ class TrekGamCustomEventBanner : TrekGamCustomEventBase() {
 
             Log.i(TAG, "contentTitle : $contentTitle")
 
-            val oldTrekBannerAdView = concurrentLinkedQueue.poll()
+            TrekAds.initialize(
+                context.applicationContext,
+                clientId
+            ) {
 
-            oldTrekBannerAdView?.destroy()
+                val oldTrekBannerAdView = concurrentLinkedQueue.poll()
 
-            TrekBannerAdView(context, null).apply {
+                oldTrekBannerAdView?.destroy()
 
-                val trekGamCustomBannerEventLoader =
-                    TrekGamCustomBannerEventLoader(this)
+                TrekBannerAdView(context, null).apply {
 
-                trekGamCustomBannerEventLoader.mediationAdLoadCallback =
-                    mediationAdLoadCallback
+                    val trekGamCustomBannerEventLoader =
+                        TrekGamCustomBannerEventLoader(this)
 
-                this.setAdListener(
-                    trekGamCustomBannerEventLoader
-                )
+                    trekGamCustomBannerEventLoader.mediationAdLoadCallback =
+                        mediationAdLoadCallback
 
-                val trekAdRequest = TrekAdRequest
-                    .Builder()
-                    .setCategory(category)
-                    .setContentUrl(contentUrl)
-                    .setContentTitle(contentTitle)
-                    .setMediationVersion(BuildConfig.MEDIATION_VERSION)
-                    .setMediationVersionCode(BuildConfig.MEDIATION_VERSION_CODE.toInt())
-                    .build()
+                    this.setAdListener(
+                        trekGamCustomBannerEventLoader
+                    )
 
-                this.setPlaceUid(placeUid)
+                    val trekAdRequest = TrekAdRequest
+                        .Builder()
+                        .setCategory(category)
+                        .setContentUrl(contentUrl)
+                        .setContentTitle(contentTitle)
+                        .setMediationVersion(BuildConfig.MEDIATION_VERSION)
+                        .setMediationVersionCode(BuildConfig.MEDIATION_VERSION_CODE.toInt())
+                        .build()
 
-                this.loadAd(trekAdRequest)
+                    this.setPlaceUid(placeUid)
 
-                concurrentLinkedQueue.offer(this)
+                    this.loadAd(trekAdRequest)
 
+                    concurrentLinkedQueue.offer(this)
+
+                }
             }
-
 
         } catch (e: Exception) {
 
