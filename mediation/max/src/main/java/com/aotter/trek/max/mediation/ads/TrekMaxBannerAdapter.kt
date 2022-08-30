@@ -2,6 +2,7 @@ package com.aotter.trek.max.mediation.ads
 
 import android.app.Activity
 import android.util.Log
+import com.aotter.net.trek.TrekAds
 import com.aotter.net.trek.ads.TrekAdRequest
 import com.aotter.net.trek.ads.TrekBannerAdView
 import com.aotter.trek.max.mediation.BuildConfig
@@ -23,7 +24,7 @@ class TrekMaxBannerAdapter(appLovinSdk: AppLovinSdk) : TrekMaxAdapterBase(appLov
 
     private var scope = CoroutineScope(Dispatchers.Main + SupervisorJob())
 
-    companion object{
+    companion object {
         private var concurrentLinkedQueue = ConcurrentLinkedQueue<TrekBannerAdView>()
     }
 
@@ -42,10 +43,16 @@ class TrekMaxBannerAdapter(appLovinSdk: AppLovinSdk) : TrekMaxAdapterBase(appLov
 
                 Log.i(TAG, "trekParameters : $trekParameters")
 
+                val clientId = trekParameters.clientId
+
                 val placeUid = trekParameters.placeUid
 
                 if (activity == null) {
                     throw NullPointerException(NEED_CORRECT_CONTEXT)
+                }
+
+                if (clientId.isEmpty()) {
+                    throw IllegalArgumentException(NEED_CLIENT_ID_TAG)
                 }
 
                 if (placeUid.isEmpty()) {
@@ -61,6 +68,8 @@ class TrekMaxBannerAdapter(appLovinSdk: AppLovinSdk) : TrekMaxAdapterBase(appLov
                 val contentTitle =
                     trekParameters.contentTitle
 
+                Log.i(TAG, "clientId : $clientId")
+
                 Log.i(TAG, "placeUid : $placeUid")
 
                 Log.i(TAG, "category : $category")
@@ -69,42 +78,47 @@ class TrekMaxBannerAdapter(appLovinSdk: AppLovinSdk) : TrekMaxAdapterBase(appLov
 
                 Log.i(TAG, "contentTitle : $contentTitle")
 
-                val iterator= concurrentLinkedQueue.iterator()
+                TrekAds.initialize(activity.applicationContext, clientId) {
 
-                while (iterator.hasNext()){
+                    val iterator = concurrentLinkedQueue.iterator()
 
-                    val trekBannerAdView = concurrentLinkedQueue.poll()
+                    while (iterator.hasNext()) {
 
-                    trekBannerAdView?.restartImpression()
+                        val trekBannerAdView = concurrentLinkedQueue.poll()
 
-                    iterator.next()
+                        trekBannerAdView?.restartImpression()
 
-                }
+                        iterator.next()
 
-                TrekBannerAdView(activity, null).apply {
+                    }
 
-                    val trekMaxBannerAdapterLoader = TrekMaxBannerAdapterLoader(this)
+                    TrekBannerAdView(activity, null).apply {
 
-                    trekMaxBannerAdapterLoader.maxAdViewAdapterListener = maxAdViewAdapterListener
+                        val trekMaxBannerAdapterLoader = TrekMaxBannerAdapterLoader(this)
 
-                    this.setAdListener(
-                        trekMaxBannerAdapterLoader
-                    )
+                        trekMaxBannerAdapterLoader.maxAdViewAdapterListener =
+                            maxAdViewAdapterListener
 
-                    val trekAdRequest = TrekAdRequest
-                        .Builder()
-                        .setCategory(category)
-                        .setContentUrl(contentUrl)
-                        .setContentTitle(contentTitle)
-                        .setMediationVersion(BuildConfig.MEDIATION_VERSION)
-                        .setMediationVersionCode(BuildConfig.MEDIATION_VERSION_CODE.toInt())
-                        .build()
+                        this.setAdListener(
+                            trekMaxBannerAdapterLoader
+                        )
 
-                    this.setPlaceUid(placeUid)
+                        val trekAdRequest = TrekAdRequest
+                            .Builder()
+                            .setCategory(category)
+                            .setContentUrl(contentUrl)
+                            .setContentTitle(contentTitle)
+                            .setMediationVersion(BuildConfig.MEDIATION_VERSION)
+                            .setMediationVersionCode(BuildConfig.MEDIATION_VERSION_CODE.toInt())
+                            .build()
 
-                    this.loadAd(trekAdRequest)
+                        this.setPlaceUid(placeUid)
 
-                    concurrentLinkedQueue.offer(this)
+                        this.loadAd(trekAdRequest)
+
+                        concurrentLinkedQueue.offer(this)
+
+                    }
 
                 }
 

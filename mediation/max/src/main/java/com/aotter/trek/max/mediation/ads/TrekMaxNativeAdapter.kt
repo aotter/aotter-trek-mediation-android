@@ -2,9 +2,10 @@ package com.aotter.trek.max.mediation.ads
 
 import android.app.Activity
 import android.util.Log
-import com.aotter.net.trek.ads.NativeAdViewController
+import com.aotter.net.trek.TrekAds
 import com.aotter.net.trek.ads.TrekAdLoader
 import com.aotter.net.trek.ads.TrekAdRequest
+import com.aotter.net.trek.ads.ad_view_binding.TrekAdViewBinder
 import com.aotter.trek.max.mediation.BuildConfig
 import com.applovin.mediation.adapter.listeners.MaxNativeAdAdapterListener
 import com.applovin.mediation.adapter.parameters.MaxAdapterResponseParameters
@@ -14,7 +15,7 @@ class TrekMaxNativeAdapter(appLovinSdk: AppLovinSdk) : TrekMaxAdapterBase(appLov
 
     private var TAG: String = TrekMaxNativeAdapter::class.java.simpleName
 
-    private var nativeAdViewController: NativeAdViewController? = null
+    private var trekMaxNativeAdapterLoader: TrekMaxNativeAdapterLoader? = null
 
     override fun loadNativeAd(
         maxAdapterResponseParameters: MaxAdapterResponseParameters?,
@@ -26,10 +27,16 @@ class TrekMaxNativeAdapter(appLovinSdk: AppLovinSdk) : TrekMaxAdapterBase(appLov
 
             val trekParameters = getTrekParameters(maxAdapterResponseParameters)
 
+            val clientId = trekParameters.clientId
+
             val placeUid = trekParameters.placeUid
 
             if (activity == null) {
                 throw NullPointerException(NEED_CORRECT_CONTEXT)
+            }
+
+            if (clientId.isEmpty()) {
+                throw IllegalArgumentException(NEED_CLIENT_ID_TAG)
             }
 
             if (placeUid.isEmpty()) {
@@ -45,6 +52,8 @@ class TrekMaxNativeAdapter(appLovinSdk: AppLovinSdk) : TrekMaxAdapterBase(appLov
             val contentTitle =
                 trekParameters.contentTitle
 
+            Log.i(TAG, "clientId : $clientId")
+
             Log.i(TAG, "placeUid : $placeUid")
 
             Log.i(TAG, "category : $category")
@@ -53,30 +62,32 @@ class TrekMaxNativeAdapter(appLovinSdk: AppLovinSdk) : TrekMaxAdapterBase(appLov
 
             Log.i(TAG, "contentTitle : $contentTitle")
 
-            nativeAdViewController = NativeAdViewController(activity)
+            TrekAds.initialize(activity.applicationContext, clientId) {
 
-            val trekAdLoader = TrekAdLoader
-                .Builder(activity, trekParameters.placeUid)
-                .withAdListener(
-                    TrekMaxNativeAdapterLoader(
-                        activity,
-                        maxNativeAdAdapterListener,
-                        nativeAdViewController
-                    )
+                trekMaxNativeAdapterLoader = TrekMaxNativeAdapterLoader(
+                    activity,
+                    maxNativeAdAdapterListener
                 )
-                .build()
 
-            val trekAdRequest = TrekAdRequest
-                .Builder()
-                .setCategory(trekParameters.category)
-                .setContentUrl(trekParameters.contentUrl)
-                .setContentTitle(trekParameters.contentTitle)
-                .setMediationVersion(BuildConfig.MEDIATION_VERSION)
-                .setMediationVersionCode(BuildConfig.MEDIATION_VERSION_CODE.toInt())
-                .build()
+                val trekAdLoader = TrekAdLoader
+                    .Builder(activity, trekParameters.placeUid)
+                    .withAdListener(
+                        trekMaxNativeAdapterLoader
+                    )
+                    .build()
 
-            trekAdLoader.loadAd(trekAdRequest)
+                val trekAdRequest = TrekAdRequest
+                    .Builder()
+                    .setCategory(trekParameters.category)
+                    .setContentUrl(trekParameters.contentUrl)
+                    .setContentTitle(trekParameters.contentTitle)
+                    .setMediationVersion(BuildConfig.MEDIATION_VERSION)
+                    .setMediationVersionCode(BuildConfig.MEDIATION_VERSION_CODE.toInt())
+                    .build()
 
+                trekAdLoader.loadAd(trekAdRequest)
+
+            }
 
         } catch (e: Exception) {
 
@@ -88,9 +99,13 @@ class TrekMaxNativeAdapter(appLovinSdk: AppLovinSdk) : TrekMaxAdapterBase(appLov
 
     override fun onDestroy() {
 
-        nativeAdViewController?.destroy()
+        trekMaxNativeAdapterLoader?.trekNativeAd?.apply {
 
-        Log.i(TAG, "NativeAd Destroy.")
+            TrekAdViewBinder.destroy(this)
+
+            Log.i(TAG, "NativeAd Destroy.")
+
+        }
 
     }
 
