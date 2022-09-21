@@ -10,7 +10,7 @@ import com.applovin.mediation.adapter.listeners.MaxNativeAdAdapterListener
 import com.applovin.mediation.adapter.parameters.MaxAdapterResponseParameters
 import com.applovin.sdk.AppLovinSdk
 
-class TrekMaxNativeAdapter(appLovinSdk: AppLovinSdk) : TrekMaxAdapterBase(appLovinSdk) {
+class TrekMaxNativeAdapter(appLovinSdk: AppLovinSdk) : TrekMediationAdapterBase(appLovinSdk) {
 
     private var TAG: String = TrekMaxNativeAdapter::class.java.simpleName
 
@@ -26,10 +26,16 @@ class TrekMaxNativeAdapter(appLovinSdk: AppLovinSdk) : TrekMaxAdapterBase(appLov
 
             val trekParameters = getTrekParameters(maxAdapterResponseParameters)
 
+            val clientId = trekParameters.clientId
+
             val placeUid = trekParameters.placeUid
 
             if (activity == null) {
                 throw NullPointerException(NEED_CORRECT_CONTEXT)
+            }
+
+            if (clientId.isEmpty()) {
+                throw IllegalArgumentException(NEED_CLIENT_ID_TAG)
             }
 
             if (placeUid.isEmpty()) {
@@ -44,6 +50,8 @@ class TrekMaxNativeAdapter(appLovinSdk: AppLovinSdk) : TrekMaxAdapterBase(appLov
 
             val contentTitle =
                 trekParameters.contentTitle
+
+            Log.i(TAG, "clientId : $clientId")
 
             Log.i(TAG, "placeUid : $placeUid")
 

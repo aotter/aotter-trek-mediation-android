@@ -14,17 +14,18 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
-import java.util.concurrent.ConcurrentLinkedQueue
 
-class TrekMaxBannerAdapter(appLovinSdk: AppLovinSdk) : TrekMaxAdapterBase(appLovinSdk),
+class TrekMaxBannerAdapter(appLovinSdk: AppLovinSdk) : TrekMediationAdapterBase(appLovinSdk),
     MaxAdViewAdapter {
 
     private var TAG: String = TrekMaxBannerAdapter::class.java.simpleName
 
     private var scope = CoroutineScope(Dispatchers.Main + SupervisorJob())
 
-    companion object{
-        private var concurrentLinkedQueue = ConcurrentLinkedQueue<TrekBannerAdView>()
+    companion object {
+
+        private var trekBannerAdView: TrekBannerAdView? = null
+
     }
 
     override fun loadAdViewAd(
@@ -42,10 +43,16 @@ class TrekMaxBannerAdapter(appLovinSdk: AppLovinSdk) : TrekMaxAdapterBase(appLov
 
                 Log.i(TAG, "trekParameters : $trekParameters")
 
+                val clientId = trekParameters.clientId
+
                 val placeUid = trekParameters.placeUid
 
                 if (activity == null) {
                     throw NullPointerException(NEED_CORRECT_CONTEXT)
+                }
+
+                if (clientId.isEmpty()) {
+                    throw IllegalArgumentException(NEED_CLIENT_ID_TAG)
                 }
 
                 if (placeUid.isEmpty()) {
@@ -61,6 +68,8 @@ class TrekMaxBannerAdapter(appLovinSdk: AppLovinSdk) : TrekMaxAdapterBase(appLov
                 val contentTitle =
                     trekParameters.contentTitle
 
+                Log.i(TAG, "clientId : $clientId")
+
                 Log.i(TAG, "placeUid : $placeUid")
 
                 Log.i(TAG, "category : $category")
@@ -69,26 +78,19 @@ class TrekMaxBannerAdapter(appLovinSdk: AppLovinSdk) : TrekMaxAdapterBase(appLov
 
                 Log.i(TAG, "contentTitle : $contentTitle")
 
-                val iterator= concurrentLinkedQueue.iterator()
+                if (trekBannerAdView == null || trekBannerAdView?.childCount == 0) {
 
-                while (iterator.hasNext()){
-
-                    val trekBannerAdView = concurrentLinkedQueue.poll()
-
-                    trekBannerAdView?.restartImpression()
-
-                    iterator.next()
+                    trekBannerAdView = TrekBannerAdView(activity, null)
 
                 }
 
-                TrekBannerAdView(activity, null).apply {
-
-                    val trekMaxBannerAdapterLoader = TrekMaxBannerAdapterLoader(this)
-
-                    trekMaxBannerAdapterLoader.maxAdViewAdapterListener = maxAdViewAdapterListener
+                trekBannerAdView?.apply {
 
                     this.setAdListener(
-                        trekMaxBannerAdapterLoader
+                        TrekMaxBannerAdapterLoader(
+                            this,
+                            maxAdViewAdapterListener
+                        )
                     )
 
                     val trekAdRequest = TrekAdRequest
@@ -103,8 +105,6 @@ class TrekMaxBannerAdapter(appLovinSdk: AppLovinSdk) : TrekMaxAdapterBase(appLov
                     this.setPlaceUid(placeUid)
 
                     this.loadAd(trekAdRequest)
-
-                    concurrentLinkedQueue.offer(this)
 
                 }
 
@@ -121,6 +121,8 @@ class TrekMaxBannerAdapter(appLovinSdk: AppLovinSdk) : TrekMaxAdapterBase(appLov
 
     override fun onDestroy() {
 
+        // The lifecycle of TrekBannerAdView is automated.
+        // TrekBannerAdView was destroyed when page close currently.
 
     }
 

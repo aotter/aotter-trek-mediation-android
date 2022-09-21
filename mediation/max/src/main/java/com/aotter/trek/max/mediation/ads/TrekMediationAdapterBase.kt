@@ -3,6 +3,7 @@ package com.aotter.trek.max.mediation.ads
 import android.app.Activity
 import android.util.Log
 import com.aotter.net.trek.TrekAds
+import com.aotter.net.utils.TrekSdkSettingsUtils
 import com.aotter.trek.max.mediation.BuildConfig
 import com.aotter.trek.max.mediation.TrekMaxDataKey
 import com.aotter.trek.max.mediation.TrekParameters
@@ -16,19 +17,15 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 
-abstract class TrekMaxAdapterBase(appLovinSdk: AppLovinSdk) :
+abstract class TrekMediationAdapterBase(appLovinSdk: AppLovinSdk) :
     MediationAdapterBase(appLovinSdk) {
 
-    private var TAG: String = TrekMaxAdapterBase::class.java.simpleName
+    private var TAG: String = TrekMediationAdapterBase::class.java.simpleName
 
     private var scope = CoroutineScope(Dispatchers.Main + SupervisorJob())
 
-    private val adapters =
-        listOf(TrekMaxBannerAdapter::class.java.name, TrekMaxNativeAdapter::class.java.name)
-
     companion object {
-        private const val APP_ID = "app_id"
-        private const val ADAPTER_CLASS = "adapter_class"
+        private const val CLIENT_ID = "clientId"
         const val NEED_CORRECT_CONTEXT =
             "Require a more restrictive Context that is of type Activity or Fragment. / Context not null. "
         const val NEED_PLACE_UUID_TAG = "Not found placeUid or empty string."
@@ -43,41 +40,21 @@ abstract class TrekMaxAdapterBase(appLovinSdk: AppLovinSdk) :
 
         scope.launch {
 
-            try {
+            val clientId =
+                maxAdapterInitializationParameters?.customParameters?.getString(CLIENT_ID) ?: ""
 
-                val adapterClass =
-                    maxAdapterInitializationParameters?.serverParameters?.getString(ADAPTER_CLASS) ?: ""
+            if (activity == null) {
+                throw NullPointerException(NEED_CORRECT_CONTEXT)
+            }
 
-                if (adapterClass in adapters) {
-
-                    val clientId =
-                        maxAdapterInitializationParameters?.serverParameters?.getString(APP_ID) ?: ""
-
-                    if (clientId.isEmpty()) {
-                        throw IllegalArgumentException(NEED_CLIENT_ID_TAG)
-                    }
-
-                    Log.i(TAG, "clientId : $clientId")
-
-                    TrekAds.initialize(applicationContext, clientId) {
-
-                        onCompletionListener?.onCompletion(
-                            MaxAdapter.InitializationStatus.INITIALIZED_SUCCESS,
-                            "TrekAds initialize success."
-                        )
-
-                        Log.i(TAG, "TrekAds initialize success.")
-
-                    }
-
-                }
-
-            }catch (e:Exception){
+            TrekAds.initialize(activity,clientId) {
 
                 onCompletionListener?.onCompletion(
-                    MaxAdapter.InitializationStatus.INITIALIZED_FAILURE,
-                    e.toString()
+                    MaxAdapter.InitializationStatus.INITIALIZED_SUCCESS,
+                    null
                 )
+
+                Log.i(TAG, "TrekAds initialize success.")
 
             }
 
@@ -104,6 +81,8 @@ abstract class TrekMaxAdapterBase(appLovinSdk: AppLovinSdk) :
 
     fun getTrekParameters(maxAdapterResponseParameters: MaxAdapterResponseParameters?): TrekParameters {
 
+        var clientId = ""
+
         var placeUid = ""
 
         var category = ""
@@ -113,6 +92,8 @@ abstract class TrekMaxAdapterBase(appLovinSdk: AppLovinSdk) :
         var contentTitle = ""
 
         maxAdapterResponseParameters?.apply {
+
+            clientId = this.customParameters.getString(CLIENT_ID) ?: ""
 
             placeUid = this.thirdPartyAdPlacementId ?: ""
 
@@ -125,7 +106,7 @@ abstract class TrekMaxAdapterBase(appLovinSdk: AppLovinSdk) :
 
         }
 
-        return TrekParameters(placeUid, category, contentUrl, contentTitle)
+        return TrekParameters(clientId, placeUid, category, contentUrl, contentTitle)
 
     }
 

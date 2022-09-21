@@ -1,23 +1,41 @@
 package com.aotter.trek.admob.mediation.ads
 
+
+import android.content.Context
 import android.util.Log
 import com.aotter.net.trek.TrekAds
 import com.aotter.net.trek.ads.TrekAdRequest
 import com.aotter.net.trek.ads.TrekBannerAdView
 import com.aotter.trek.admob.mediation.BuildConfig
 import com.aotter.trek.admob.mediation.TrekAdmobDataKey
+import com.aotter.trek.admob.mediation.extension.getVersion
 import com.google.android.gms.ads.mediation.*
 import org.json.JSONObject
-import java.util.concurrent.ConcurrentLinkedQueue
 
-class TrekAdmobCustomEventBanner : TrekAdmobCustomEventBase() {
+
+class TrekAdmobCustomEventBanner : Adapter() {
 
     private var TAG: String = TrekAdmobCustomEventBanner::class.java.simpleName
 
+
     companion object {
-        private var concurrentLinkedQueue = ConcurrentLinkedQueue<TrekBannerAdView>()
+        private const val NEED_PLACE_UUID_TAG = "Not found placeUid or empty string."
+        private const val NEED_CLIENT_ID_TAG = "Not found client id or empty string."
+        private const val SERVER_PARAMETER = "parameter"
+        private const val PLACE_UID = "placeUid"
+        private const val CLIENT_ID = "clientId"
+        private var trekBannerAdView: TrekBannerAdView? = null
     }
 
+    override fun initialize(
+        context: Context,
+        initializationCompleteCallback: InitializationCompleteCallback,
+        mediationConfigurations: MutableList<MediationConfiguration>
+    ) {
+
+        return
+
+    }
 
     override fun loadBannerAd(
         mediationNativeAdConfiguration: MediationBannerAdConfiguration,
@@ -27,19 +45,19 @@ class TrekAdmobCustomEventBanner : TrekAdmobCustomEventBase() {
 
         try {
 
-            val serverParameter = JSONObject(
+            val serverParameterDto = JSONObject(
                 mediationNativeAdConfiguration.serverParameters.getString(
                     SERVER_PARAMETER
                 ) ?: ""
             )
 
-            val clientId = serverParameter.getString(CLIENT_ID)
+            val clientId = serverParameterDto.getString(CLIENT_ID)
 
-            val placeUid = serverParameter.getString(PLACE_UID)
+            val placeUid = serverParameterDto.getString(PLACE_UID)
 
             val context = mediationNativeAdConfiguration.context
 
-            if (clientId.isNullOrEmpty()) {
+            if (clientId.isEmpty()) {
                 throw IllegalArgumentException(NEED_CLIENT_ID_TAG)
             }
 
@@ -47,47 +65,47 @@ class TrekAdmobCustomEventBanner : TrekAdmobCustomEventBase() {
                 throw IllegalArgumentException(NEED_PLACE_UUID_TAG)
             }
 
-            val category =
-                mediationNativeAdConfiguration.mediationExtras.getString(TrekAdmobDataKey.CATEGORY)
-                    ?: ""
-
-            val contentUrl =
-                mediationNativeAdConfiguration.mediationExtras.getString(TrekAdmobDataKey.CONTENT_URL)
-                    ?: ""
-
-            val contentTitle =
-                mediationNativeAdConfiguration.mediationExtras.getString(TrekAdmobDataKey.CONTENT_TITLE)
-                    ?: ""
-
-            Log.i(TAG, "clientId : $clientId")
-
-            Log.i(TAG, "placeUid : $placeUid")
-
-            Log.i(TAG, "category : $category")
-
-            Log.i(TAG, "contentUrl : $contentUrl")
-
-            Log.i(TAG, "contentTitle : $contentTitle")
-
             TrekAds.initialize(
-                context.applicationContext,
+                context,
                 clientId
             ) {
 
-                val oldTrekBannerAdView = concurrentLinkedQueue.poll()
+                val category =
+                    mediationNativeAdConfiguration.mediationExtras.getString(TrekAdmobDataKey.CATEGORY)
+                        ?: ""
 
-                oldTrekBannerAdView?.destroy()
+                val contentUrl =
+                    mediationNativeAdConfiguration.mediationExtras.getString(TrekAdmobDataKey.CONTENT_URL)
+                        ?: ""
 
-                TrekBannerAdView(context, null).apply {
+                val contentTitle =
+                    mediationNativeAdConfiguration.mediationExtras.getString(TrekAdmobDataKey.CONTENT_TITLE)
+                        ?: ""
 
-                    val trekAdmobCustomBannerEventLoader =
-                        TrekAdmobCustomBannerEventLoader(this)
+                Log.i(TAG, "clientId : $clientId")
 
-                    trekAdmobCustomBannerEventLoader.mediationAdLoadCallback =
-                        mediationAdLoadCallback
+                Log.i(TAG, "placeUid : $placeUid")
+
+                Log.i(TAG, "category : $category")
+
+                Log.i(TAG, "contentUrl : $contentUrl")
+
+                Log.i(TAG, "contentTitle : $contentTitle")
+
+
+                if (trekBannerAdView == null || trekBannerAdView?.childCount == 0) {
+
+                    trekBannerAdView = TrekBannerAdView(context, null)
+
+                }
+
+                trekBannerAdView?.apply {
 
                     this.setAdListener(
-                        trekAdmobCustomBannerEventLoader
+                        TrekAdmobCustomBannerEventLoader(
+                            this,
+                            mediationAdLoadCallback
+                        )
                     )
 
                     val trekAdRequest = TrekAdRequest
@@ -103,9 +121,8 @@ class TrekAdmobCustomEventBanner : TrekAdmobCustomEventBase() {
 
                     this.loadAd(trekAdRequest)
 
-                    concurrentLinkedQueue.offer(this)
-
                 }
+
             }
 
         } catch (e: Exception) {
@@ -116,5 +133,17 @@ class TrekAdmobCustomEventBanner : TrekAdmobCustomEventBase() {
 
     }
 
+
+    override fun getSDKVersionInfo(): VersionInfo {
+
+        return BuildConfig.MEDIATION_VERSION.getVersion()
+
+    }
+
+    override fun getVersionInfo(): VersionInfo {
+
+        return BuildConfig.MEDIATION_VERSION.getVersion()
+
+    }
 
 }
