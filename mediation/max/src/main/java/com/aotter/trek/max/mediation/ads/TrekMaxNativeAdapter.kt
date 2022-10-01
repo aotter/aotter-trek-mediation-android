@@ -62,7 +62,7 @@ class TrekMaxNativeAdapter(appLovinSdk: AppLovinSdk) : TrekMaxAdapterBase(appLov
 
             Log.i(TAG, "contentTitle : $contentTitle")
 
-            TrekAds.initialize(activity.applicationContext, clientId) {
+            TrekAds.initialize(activity, clientId) {
 
                 trekMaxNativeAdapterLoader = TrekMaxNativeAdapterLoader(
                     activity,

@@ -85,7 +85,7 @@ class AdmobNativeAdRecyclerViewPageActivity : AppCompatActivity() {
 
                     data.postId = nativeAd.hashCode()
 
-                    data.adView = createAdView(nativeAd,false)
+                    data.adView = createAdView(nativeAd,true)
 
                     list.add(1, data)
 
@@ -148,7 +148,7 @@ class AdmobNativeAdRecyclerViewPageActivity : AppCompatActivity() {
 
                     data.postId = nativeAd.hashCode()
 
-                    data.adView = createAdView(nativeAd,true)
+                    data.adView = createAdView(nativeAd,false)
 
                     list.add(8, data)
 

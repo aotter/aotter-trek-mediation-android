@@ -44,6 +44,7 @@ android {
 
 dependencies {
 
+
     implementation 'com.aotter.android:trek-ads:5.4.9_beta'
 
     implementation 'androidx.core:core-ktx:1.8.0'
