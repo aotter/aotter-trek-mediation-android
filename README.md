@@ -4,7 +4,11 @@
 https://trek.gitbook.io/aottertrek-sdk-doc/android/admob-mediation
 
 ### Trek AdMob Mediation release change log
-- 2022/08/04 release - Mediation `4.7.2` (Recommend)
+
+- 2022/10/03 release - Mediation `4.8.0` (Recommend)
+  - Support new ad format of VAST XML & HTML 5
+  - Log optimization
+- 2022/08/04 release - Mediation `4.7.2` 
   - TrekBannerAdView new feature
     - preload
     - auto refresh
