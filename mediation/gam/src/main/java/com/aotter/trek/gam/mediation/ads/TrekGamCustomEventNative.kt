@@ -7,7 +7,10 @@ import com.aotter.net.trek.ads.TrekAdLoader
 import com.aotter.net.trek.ads.TrekAdRequest
 import com.aotter.trek.gam.mediation.BuildConfig
 import com.aotter.trek.gam.mediation.TrekGamDataKey
-import com.google.android.gms.ads.mediation.*
+import com.google.android.gms.ads.mediation.MediationAdLoadCallback
+import com.google.android.gms.ads.mediation.MediationNativeAdCallback
+import com.google.android.gms.ads.mediation.MediationNativeAdConfiguration
+import com.google.android.gms.ads.mediation.UnifiedNativeAdMapper
 import org.json.JSONObject
 
 class TrekGamCustomEventNative : TrekGamCustomEventBase() {
@@ -64,32 +67,29 @@ class TrekGamCustomEventNative : TrekGamCustomEventBase() {
             Log.i(TAG, "contentTitle : $contentTitle")
 
             TrekAds.initialize(
-                context.applicationContext,
-                clientId
-            ) {
+                context,
+                clientId,
+                object : TrekAds.OnInitializationCompleteListener {
+                    override fun onInitializationComplete() {
 
-                val trekAdLoader = TrekAdLoader
-                    .Builder(context, placeUid)
-                    .withAdListener(
-                        TrekGamCustomNativeEventLoader(
-                            context,
-                            mediationAdLoadCallback
-                        )
-                    )
-                    .build()
+                        val trekAdLoader = TrekAdLoader.Builder(context, placeUid).withAdListener(
+                            TrekGamCustomNativeEventLoader(
+                                context, mediationAdLoadCallback
+                            )
+                        ).build()
 
-                val trekAdRequest = TrekAdRequest
-                    .Builder()
-                    .setCategory(category)
-                    .setContentUrl(contentUrl)
-                    .setContentTitle(contentTitle)
-                    .setMediationVersion(BuildConfig.MEDIATION_VERSION)
-                    .setMediationVersionCode(BuildConfig.MEDIATION_VERSION_CODE.toInt())
-                    .build()
+                        val trekAdRequest =
+                            TrekAdRequest.Builder().setCategory(category).setContentUrl(contentUrl)
+                                .setContentTitle(contentTitle)
+                                .setMediationVersion(BuildConfig.MEDIATION_VERSION)
+                                .setMediationVersionCode(BuildConfig.MEDIATION_VERSION_CODE.toInt())
+                                .build()
 
-                trekAdLoader.loadAd(trekAdRequest)
+                        trekAdLoader.loadAd(trekAdRequest)
 
-            }
+
+                    }
+                })
 
         } catch (e: Exception) {
 

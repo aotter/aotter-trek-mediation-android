@@ -9,15 +9,11 @@ import com.applovin.mediation.adapter.listeners.MaxAdViewAdapterListener
 
 
 class TrekMaxBannerAdapterLoader(
-    private val trekBannerAdView: TrekBannerAdView
+    private val trekBannerAdView: TrekBannerAdView,
+    private val maxAdViewAdapterListener: MaxAdViewAdapterListener?
 ) : TrekAdListener {
 
     private var TAG: String = TrekMaxBannerAdapterLoader::class.java.simpleName
-
-    var maxAdViewAdapterListener: MaxAdViewAdapterListener? =null
-        set(value) {
-            field = value
-        }
 
     override fun onAdFailedToLoad(message: String) {
 

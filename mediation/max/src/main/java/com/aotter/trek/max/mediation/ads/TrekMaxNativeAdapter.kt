@@ -62,32 +62,36 @@ class TrekMaxNativeAdapter(appLovinSdk: AppLovinSdk) : TrekMaxAdapterBase(appLov
 
             Log.i(TAG, "contentTitle : $contentTitle")
 
-            TrekAds.initialize(activity, clientId) {
+            TrekAds.initialize(activity, clientId,
+                object : TrekAds.OnInitializationCompleteListener {
+                    override fun onInitializationComplete() {
 
-                trekMaxNativeAdapterLoader = TrekMaxNativeAdapterLoader(
-                    activity,
-                    maxNativeAdAdapterListener
-                )
+                        trekMaxNativeAdapterLoader = TrekMaxNativeAdapterLoader(
+                            activity,
+                            maxNativeAdAdapterListener
+                        )
 
-                val trekAdLoader = TrekAdLoader
-                    .Builder(activity, trekParameters.placeUid)
-                    .withAdListener(
-                        trekMaxNativeAdapterLoader
-                    )
-                    .build()
+                        val trekAdLoader = TrekAdLoader
+                            .Builder(activity, trekParameters.placeUid)
+                            .withAdListener(
+                                trekMaxNativeAdapterLoader
+                            )
+                            .build()
 
-                val trekAdRequest = TrekAdRequest
-                    .Builder()
-                    .setCategory(trekParameters.category)
-                    .setContentUrl(trekParameters.contentUrl)
-                    .setContentTitle(trekParameters.contentTitle)
-                    .setMediationVersion(BuildConfig.MEDIATION_VERSION)
-                    .setMediationVersionCode(BuildConfig.MEDIATION_VERSION_CODE.toInt())
-                    .build()
+                        val trekAdRequest = TrekAdRequest
+                            .Builder()
+                            .setCategory(trekParameters.category)
+                            .setContentUrl(trekParameters.contentUrl)
+                            .setContentTitle(trekParameters.contentTitle)
+                            .setMediationVersion(BuildConfig.MEDIATION_VERSION)
+                            .setMediationVersionCode(BuildConfig.MEDIATION_VERSION_CODE.toInt())
+                            .build()
 
-                trekAdLoader.loadAd(trekAdRequest)
+                        trekAdLoader.loadAd(trekAdRequest)
 
-            }
+                    }
+                }
+            )
 
         } catch (e: Exception) {
 

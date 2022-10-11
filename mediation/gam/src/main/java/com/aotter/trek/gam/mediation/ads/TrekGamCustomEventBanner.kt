@@ -7,19 +7,16 @@ import com.aotter.net.trek.ads.TrekAdRequest
 import com.aotter.net.trek.ads.TrekBannerAdView
 import com.aotter.trek.gam.mediation.BuildConfig
 import com.aotter.trek.gam.mediation.TrekGamDataKey
-import com.google.android.gms.ads.mediation.*
+import com.google.android.gms.ads.mediation.MediationAdLoadCallback
+import com.google.android.gms.ads.mediation.MediationBannerAd
+import com.google.android.gms.ads.mediation.MediationBannerAdCallback
+import com.google.android.gms.ads.mediation.MediationBannerAdConfiguration
 import org.json.JSONObject
-import java.util.concurrent.ConcurrentLinkedQueue
 
 
 class TrekGamCustomEventBanner : TrekGamCustomEventBase() {
 
     private var TAG: String = TrekGamCustomEventBanner::class.java.simpleName
-
-    companion object {
-        private var concurrentLinkedQueue = ConcurrentLinkedQueue<TrekBannerAdView>()
-    }
-
 
     override fun loadBannerAd(
         mediationNativeAdConfiguration: MediationBannerAdConfiguration,
@@ -71,43 +68,42 @@ class TrekGamCustomEventBanner : TrekGamCustomEventBase() {
             Log.i(TAG, "contentTitle : $contentTitle")
 
             TrekAds.initialize(
-                context.applicationContext,
-                clientId
-            ) {
+                context,
+                clientId,
+                object : TrekAds.OnInitializationCompleteListener {
+                    override fun onInitializationComplete() {
 
-                val oldTrekBannerAdView = concurrentLinkedQueue.poll()
+                        TrekBannerAdView(context, null).apply {
 
-                oldTrekBannerAdView?.destroy()
+                            val trekGamCustomBannerEventLoader =
+                                TrekGamCustomBannerEventLoader(this, mediationAdLoadCallback)
 
-                TrekBannerAdView(context, null).apply {
+                            this.setAdListener(
+                                trekGamCustomBannerEventLoader
+                            )
 
-                    val trekGamCustomBannerEventLoader =
-                        TrekGamCustomBannerEventLoader(this)
+                            val trekAdRequest = TrekAdRequest
+                                .Builder()
+                                .setCategory(category)
+                                .setContentUrl(contentUrl)
+                                .setContentTitle(contentTitle)
+                                .setMediationVersion(BuildConfig.MEDIATION_VERSION)
+                                .setMediationVersionCode(BuildConfig.MEDIATION_VERSION_CODE.toInt())
+                                .build()
 
-                    trekGamCustomBannerEventLoader.mediationAdLoadCallback =
-                        mediationAdLoadCallback
+                            this.preload = false
 
-                    this.setAdListener(
-                        trekGamCustomBannerEventLoader
-                    )
+                            this.autoRefresh = false
 
-                    val trekAdRequest = TrekAdRequest
-                        .Builder()
-                        .setCategory(category)
-                        .setContentUrl(contentUrl)
-                        .setContentTitle(contentTitle)
-                        .setMediationVersion(BuildConfig.MEDIATION_VERSION)
-                        .setMediationVersionCode(BuildConfig.MEDIATION_VERSION_CODE.toInt())
-                        .build()
+                            this.setPlaceUid(placeUid)
 
-                    this.setPlaceUid(placeUid)
+                            this.loadAd(trekAdRequest)
 
-                    this.loadAd(trekAdRequest)
+                        }
 
-                    concurrentLinkedQueue.offer(this)
-
+                    }
                 }
-            }
+            )
 
         } catch (e: Exception) {
 

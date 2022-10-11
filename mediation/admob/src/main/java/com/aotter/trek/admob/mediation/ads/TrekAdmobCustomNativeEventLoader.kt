@@ -53,7 +53,7 @@ class TrekAdmobCustomNativeEventLoader(
 
     override fun onAdImpression() {
 
-        Log.i(TAG, "Native ad or Supr ad  impression success.")
+        Log.i(TAG, "Native ad impression success.")
 
         mediationNativeAdCallback?.reportAdImpression()
 

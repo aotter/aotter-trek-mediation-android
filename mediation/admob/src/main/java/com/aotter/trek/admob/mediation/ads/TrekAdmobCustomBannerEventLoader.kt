@@ -13,6 +13,7 @@ import com.google.android.gms.ads.mediation.MediationBannerAdCallback
 
 class TrekAdmobCustomBannerEventLoader(
     private val trekBannerAdView: TrekBannerAdView,
+    private val mediationAdLoadCallback: MediationAdLoadCallback<MediationBannerAd, MediationBannerAdCallback>?
 ) : TrekAdListener, MediationBannerAd {
 
     private val TAG: String = TrekAdmobCustomBannerEventLoader::class.java.simpleName
@@ -20,12 +21,6 @@ class TrekAdmobCustomBannerEventLoader(
     private val SDK_DOMAIN = BuildConfig.LIBRARY_PACKAGE_NAME
 
     private var mediationBannerAdCallback: MediationBannerAdCallback? = null
-
-    var mediationAdLoadCallback: MediationAdLoadCallback<MediationBannerAd, MediationBannerAdCallback>? =
-        null
-        set(value) {
-            field = value
-        }
 
     override fun onAdFailedToLoad(message: String) {
 
