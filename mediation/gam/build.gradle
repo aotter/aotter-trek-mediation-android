@@ -7,6 +7,10 @@ project.ext.mediationName = 'GAM'
 
 apply from : '../common.gradle'
 
+android {
+    namespace 'com.aotter.trek.gam.mediation'
+}
+
 dependencies {
 
     implementation 'com.google.android.gms:play-services-ads:21.3.0'

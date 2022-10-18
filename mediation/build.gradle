@@ -7,6 +7,10 @@ project.ext.mediationName = 'Trek_Mediation'
 
 apply from : 'common.gradle'
 
+android {
+    namespace 'com.aotter.trek.mediation'
+}
+
 dependencies {
 
     api project(':mediation:admob')
