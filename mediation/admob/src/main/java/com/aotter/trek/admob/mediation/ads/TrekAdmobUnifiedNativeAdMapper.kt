@@ -75,6 +75,12 @@ class TrekAdmobUnifiedNativeAdMapper(private val context: Context) : UnifiedNati
 
         setHasVideoContent(trekNativeAd.isVideoAd())
 
+        trekNativeAd.mediaContentAspectRatio?.let {
+
+            mediaContentAspectRatio = it
+
+        }
+
         setMediaView(trekMediaView)
 
         val bundle = Bundle()
