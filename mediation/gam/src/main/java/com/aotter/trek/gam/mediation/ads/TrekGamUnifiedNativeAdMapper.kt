@@ -7,11 +7,10 @@ import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
-import androidx.core.view.forEach
 import com.aotter.net.dto.trek.response.Img
 import com.aotter.net.dto.trek.response.TrekNativeAd
+import com.aotter.net.trek.ads.TrekAdViewBinder
 import com.aotter.net.trek.ads.TrekMediaView
-import com.aotter.net.trek.ads.ad_view_binding.TrekAdViewBinder
 import com.aotter.trek.gam.mediation.TrekGamDataKey
 import com.google.android.gms.ads.formats.NativeAd
 import com.google.android.gms.ads.mediation.UnifiedNativeAdMapper
@@ -26,6 +25,8 @@ class TrekGamUnifiedNativeAdMapper(private val context: Context) : UnifiedNative
     }
 
     private var trekNativeAd: TrekNativeAd? = null
+
+    private var trekAdViewBinder: TrekAdViewBinder? = null
 
     private val trekMediaView by lazy {
 
@@ -135,20 +136,21 @@ class TrekGamUnifiedNativeAdMapper(private val context: Context) : UnifiedNative
 
             (containerView as? NativeAdView)?.let { nativeAdView ->
 
-                val clickableViews = mutableListOf<View>()
-
-                clickableAssetViews.values.forEach { view ->
-
-                    clickableViews.add(view)
-
-                }
-
                 val mediaView: TrekMediaView? =
                     nativeAdView.mediaView?.findViewWithTag(trekMediaView.tag)
 
-                TrekAdViewBinder
-                    .registerAdView(nativeAdView, mediaView, trekNativeAd)
-                    .registeredChildViews(clickableViews)
+                trekAdViewBinder = TrekAdViewBinder(containerView, mediaView, trekNativeAd).apply {
+
+                    clickableAssetViews.values.forEach { view ->
+
+                        this.setViewClick(view)
+
+                    }
+
+                    this.bindAdView()
+
+                }
+
 
             }
 
@@ -159,9 +161,7 @@ class TrekGamUnifiedNativeAdMapper(private val context: Context) : UnifiedNative
     override fun untrackView(view: View) {
         super.untrackView(view)
 
-        trekNativeAd?.let {trekNativeAd->
-            TrekAdViewBinder.destroy(trekNativeAd)
-        }
+        trekAdViewBinder?.destroy()
 
     }
 

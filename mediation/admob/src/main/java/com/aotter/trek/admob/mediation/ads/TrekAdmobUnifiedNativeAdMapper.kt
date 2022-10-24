@@ -6,13 +6,11 @@ import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.View
-import androidx.core.view.forEach
 import com.aotter.net.dto.trek.response.Img
 import com.aotter.net.dto.trek.response.TrekNativeAd
+import com.aotter.net.trek.ads.TrekAdViewBinder
 import com.aotter.net.trek.ads.TrekMediaView
-import com.aotter.net.trek.ads.ad_view_binding.TrekAdViewBinder
 import com.aotter.trek.admob.mediation.TrekAdmobDataKey
 import com.google.android.gms.ads.formats.NativeAd
 import com.google.android.gms.ads.mediation.UnifiedNativeAdMapper
@@ -27,6 +25,8 @@ class TrekAdmobUnifiedNativeAdMapper(private val context: Context) : UnifiedNati
     }
 
     private var trekNativeAd: TrekNativeAd? = null
+
+    private var trekAdViewBinder: TrekAdViewBinder? = null
 
     private val trekMediaView by lazy {
 
@@ -58,11 +58,8 @@ class TrekAdmobUnifiedNativeAdMapper(private val context: Context) : UnifiedNati
 
         icon = TrekAdmobNativeMappedImage(
             trekNativeAd.imgIconHd.drawable ?: BitmapDrawable(
-                context.resources,
-                emptyIconBitmap
-            ),
-            trekNativeAd.imgIconHd.uri ?: Uri.parse(""),
-            IMAGE_SCALE
+                context.resources, emptyIconBitmap
+            ), trekNativeAd.imgIconHd.uri ?: Uri.parse(""), IMAGE_SCALE
         )
 
         setTrekImagesToAdmobImages(trekNativeAd.imgs)
@@ -120,8 +117,7 @@ class TrekAdmobUnifiedNativeAdMapper(private val context: Context) : UnifiedNati
             imageList.add(
                 TrekAdmobNativeMappedImage(
                     img.image.drawable ?: BitmapDrawable(
-                        context.resources,
-                        emptyBitmap
+                        context.resources, emptyBitmap
                     ), img.image.uri ?: Uri.parse(""), IMAGE_SCALE
                 )
             )
@@ -142,20 +138,21 @@ class TrekAdmobUnifiedNativeAdMapper(private val context: Context) : UnifiedNati
 
             (containerView as? NativeAdView)?.let { nativeAdView ->
 
-                val clickableViews = mutableListOf<View>()
-
-                clickableAssetViews.values.forEach { view ->
-
-                    clickableViews.add(view)
-
-                }
-
                 val mediaView: TrekMediaView? =
                     nativeAdView.mediaView?.findViewWithTag(trekMediaView.tag)
 
-                TrekAdViewBinder
-                    .registerAdView(nativeAdView, mediaView, trekNativeAd)
-                    .registeredChildViews(clickableViews)
+                trekAdViewBinder = TrekAdViewBinder(containerView, mediaView, trekNativeAd).apply {
+
+                    clickableAssetViews.values.forEach { view ->
+
+                        this.setViewClick(view)
+
+                    }
+
+                    this.bindAdView()
+
+                }
+
 
             }
 
@@ -166,9 +163,7 @@ class TrekAdmobUnifiedNativeAdMapper(private val context: Context) : UnifiedNati
     override fun untrackView(view: View) {
         super.untrackView(view)
 
-        trekNativeAd?.let { trekNativeAd ->
-            TrekAdViewBinder.destroy(trekNativeAd)
-        }
+        trekAdViewBinder?.destroy()
 
     }
 
