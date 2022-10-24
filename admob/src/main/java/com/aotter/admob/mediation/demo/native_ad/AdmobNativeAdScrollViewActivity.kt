@@ -15,6 +15,7 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdLoader
 import com.google.android.gms.ads.AdRequest
+import kotlin.math.roundToInt
 
 
 class AdmobNativeAdScrollViewActivity : AppCompatActivity() {
@@ -71,9 +72,21 @@ class AdmobNativeAdScrollViewActivity : AppCompatActivity() {
 
                         adBody.text = nativeAd.body
 
+                        mediaView.mediaContent = nativeAd.mediaContent
+
                         mediaView.setImageScaleType(ImageView.ScaleType.FIT_XY)
 
-                        nativeAdView.mediaView = mediaView
+                        if ((nativeAd.mediaContent?.aspectRatio ?: 0.0f) > 1f) {
+                            mediaView.post {
+
+                                val height = (this.root.measuredWidth * 0.5625f).roundToInt()
+
+                                mediaView.layoutParams.height = height
+
+                                mediaView.requestLayout()
+
+                            }
+                        }
 
                         nativeAdView.headlineView = adBody
 

@@ -4,22 +4,24 @@ import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.aotter.trek.admob.mediation.TrekAdmobDataKey
-import com.aotter.trek.admob.mediation.ads.TrekAdmobCustomEventNative
 import com.aotter.admob.mediation.demo.AdmobLocalNativeAdData
 import com.aotter.admob.mediation.demo.AdmobNativeAdAdapter
 import com.aotter.admob.mediation.demo.ItemCallback
 import com.aotter.admob.mediation.demo.R
 import com.aotter.admob.mediation.demo.databinding.ActivityAdmobNativeAdRecyclerviewViewBinding
 import com.aotter.admob.mediation.demo.databinding.ItemAdmobNativeAdBinding
+import com.aotter.trek.admob.mediation.TrekAdmobDataKey
+import com.aotter.trek.admob.mediation.ads.TrekAdmobCustomEventNative
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdLoader
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.nativead.NativeAd
+import kotlin.math.roundToInt
 
 class AdmobNativeAdRecyclerViewPageActivity : AppCompatActivity() {
 
@@ -213,6 +215,22 @@ class AdmobNativeAdRecyclerViewPageActivity : AppCompatActivity() {
             adView.mediaView
         } else {
             null
+        }
+
+        mediaView?.mediaContent = nativeAd.mediaContent
+
+        mediaView?.setImageScaleType(ImageView.ScaleType.FIT_XY)
+
+        if ((nativeAd.mediaContent?.aspectRatio ?: 0.0f) > 1f) {
+            mediaView?.post {
+
+                val height = (adView.root.measuredWidth * 0.5625f).roundToInt()
+
+                mediaView.layoutParams.height = height
+
+                mediaView.requestLayout()
+
+            }
         }
 
         adView.nativeAdView.mediaView = mediaView

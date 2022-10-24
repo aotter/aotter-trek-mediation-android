@@ -17,6 +17,7 @@ import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdLoader
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.admanager.AdManagerAdRequest
+import kotlin.math.roundToInt
 
 
 class GamNativeAdScrollViewActivity : AppCompatActivity() {
@@ -71,7 +72,21 @@ class GamNativeAdScrollViewActivity : AppCompatActivity() {
 
                         adBody.text = nativeAd.headline
 
+                        mediaView.mediaContent = nativeAd.mediaContent
+
                         mediaView.setImageScaleType(ImageView.ScaleType.FIT_XY)
+
+                        if ((nativeAd.mediaContent?.aspectRatio ?: 0.0f) > 1f) {
+                            mediaView.post {
+
+                                val height = (this.root.measuredWidth * 0.5625f).roundToInt()
+
+                                mediaView.layoutParams.height = height
+
+                                mediaView.requestLayout()
+
+                            }
+                        }
 
                         nativeAdView.mediaView = mediaView
 

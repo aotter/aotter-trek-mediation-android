@@ -141,18 +141,17 @@ class TrekAdmobUnifiedNativeAdMapper(private val context: Context) : UnifiedNati
                 val mediaView: TrekMediaView? =
                     nativeAdView.mediaView?.findViewWithTag(trekMediaView.tag)
 
+                clickableAssetViews.values.forEach { view ->
+
+                    trekNativeAd.setNativeAdClickAction(view)
+
+                }
+
                 trekAdViewBinder = TrekAdViewBinder(containerView, mediaView, trekNativeAd).apply {
-
-                    clickableAssetViews.values.forEach { view ->
-
-                        this.setViewClick(view)
-
-                    }
 
                     this.bindAdView()
 
                 }
-
 
             }
 

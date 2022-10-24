@@ -2,17 +2,26 @@ package com.aotter.gam.mediation.demo.native_ad
 
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.aotter.trek.gam.mediation.TrekGamDataKey
-import com.aotter.trek.gam.mediation.ads.TrekGamCustomEventNative
 import com.aotter.gam.mediation.demo.GamLocalNativeAdData
 import com.aotter.gam.mediation.demo.GamNativeAdAdapter
 import com.aotter.gam.mediation.demo.ItemCallback
+import com.aotter.gam.mediation.demo.R
 import com.aotter.gam.mediation.demo.databinding.ActivityGamNativeAdRecyclerviewViewBinding
+import com.aotter.gam.mediation.demo.databinding.ItemGamNativeAdBinding
+import com.aotter.trek.gam.mediation.TrekGamDataKey
+import com.aotter.trek.gam.mediation.ads.TrekGamCustomEventNative
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdLoader
-import com.google.android.gms.ads.admanager.AdManagerAdRequest
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.nativead.NativeAd
+import kotlin.math.roundToInt
 
 class GamNativeAdRecyclerViewPageActivity : AppCompatActivity() {
 
@@ -58,7 +67,7 @@ class GamNativeAdRecyclerViewPageActivity : AppCompatActivity() {
 
         }
 
-        gamNativeAdAdapter.submitList(list.toList()){
+        gamNativeAdAdapter.submitList(list.toList()) {
             loadAdmobNativeAd()
         }
 
@@ -78,11 +87,11 @@ class GamNativeAdRecyclerViewPageActivity : AppCompatActivity() {
 
                     data.postId = nativeAd.hashCode()
 
-                    data.nativeAd = nativeAd
+                    data.adView = createAdView(nativeAd, true)
 
-                    list.add(1,data)
+                    list.add(1, data)
 
-                    gamNativeAdAdapter.submitList(list.toList()){
+                    gamNativeAdAdapter.submitList(list.toList()) {
 
                         loadAdmobNativeAd2()
 
@@ -118,7 +127,7 @@ class GamNativeAdRecyclerViewPageActivity : AppCompatActivity() {
         bundle.putString(TrekGamDataKey.CONTENT_URL, "https://agirls.aotter.net/")
         bundle.putString(TrekGamDataKey.CONTENT_TITLE, "電獺少女")
 
-        val adRequest = AdManagerAdRequest
+        val adRequest = AdRequest
             .Builder()
             .addNetworkExtrasBundle(TrekGamCustomEventNative::class.java, bundle)
             .build()
@@ -141,9 +150,9 @@ class GamNativeAdRecyclerViewPageActivity : AppCompatActivity() {
 
                     data.postId = nativeAd.hashCode()
 
-                    data.nativeAd = nativeAd
+                    data.adView = createAdView(nativeAd, false)
 
-                    list.add(5,data)
+                    list.add(8, data)
 
                     gamNativeAdAdapter.submitList(list.toList())
 
@@ -177,12 +186,58 @@ class GamNativeAdRecyclerViewPageActivity : AppCompatActivity() {
         bundle.putString(TrekGamDataKey.CONTENT_URL, "https://agirls.aotter.net/")
         bundle.putString(TrekGamDataKey.CONTENT_TITLE, "電獺少女")
 
-        val adRequest = AdManagerAdRequest
+        val adRequest = AdRequest
             .Builder()
             .addNetworkExtrasBundle(TrekGamCustomEventNative::class.java, bundle)
             .build()
 
         adLoader.loadAd(adRequest)
+
+    }
+
+    private fun createAdView(nativeAd: NativeAd, isMedia: Boolean): View {
+
+        val adView = ItemGamNativeAdBinding.bind(
+            LayoutInflater.from(this)
+                .inflate(R.layout.item_gam_native_ad, null)
+        )
+
+        adView.advertiser.text = nativeAd.advertiser
+
+        adView.adBody.text = nativeAd.body
+
+        Glide.with(this)
+            .load(nativeAd.icon?.drawable)
+            .transition(DrawableTransitionOptions.withCrossFade())
+            .into(adView.adImg)
+
+        val mediaView = if (isMedia) {
+            adView.mediaView
+        } else {
+            null
+        }
+
+        mediaView?.mediaContent = nativeAd.mediaContent
+
+        mediaView?.setImageScaleType(ImageView.ScaleType.FIT_XY)
+
+        if ((nativeAd.mediaContent?.aspectRatio ?: 0.0f) > 1f) {
+            mediaView?.post {
+
+                val height = (adView.root.measuredWidth * 0.5625f).roundToInt()
+
+                mediaView.layoutParams.height = height
+
+                mediaView.requestLayout()
+
+            }
+        }
+
+        adView.nativeAdView.mediaView = mediaView
+
+        adView.nativeAdView.setNativeAd(nativeAd)
+
+        return adView.root
 
     }
 
