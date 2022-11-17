@@ -59,11 +59,9 @@ class AdmobNativeAdScrollViewActivity : AppCompatActivity() {
 
         val adUnit = "ca-app-pub-8836593984677243/4613662079"
 
-        adLoader = AdLoader.Builder(this, adUnit)
-            .forNativeAd { nativeAd ->
+        adLoader = AdLoader.Builder(this, adUnit).forNativeAd { nativeAd ->
 
                 if (!isDestroyed) {
-
 
 
                     adView = ItemStyle1Binding.bind(viewBinding.viewStub.inflate()).apply {
@@ -88,9 +86,7 @@ class AdmobNativeAdScrollViewActivity : AppCompatActivity() {
                             }
                         }
 
-                        nativeAdView.headlineView = adBody
-
-                        nativeAdView.advertiserView = advertiser
+                        nativeAdView.mediaView = mediaView
 
                         nativeAdView.setNativeAd(nativeAd)
 
@@ -98,8 +94,7 @@ class AdmobNativeAdScrollViewActivity : AppCompatActivity() {
 
                 }
 
-            }
-            .withAdListener(object : AdListener() {
+            }.withAdListener(object : AdListener() {
                 override fun onAdClicked() {
                     super.onAdClicked()
                     Log.i("adLoader", "onAdClicked")
@@ -116,8 +111,7 @@ class AdmobNativeAdScrollViewActivity : AppCompatActivity() {
                     super.onAdLoaded()
                     Log.i("adLoader", "onAdLoaded")
                 }
-            })
-            .build()
+            }).build()
 
         val bundle = Bundle()
 
@@ -125,10 +119,8 @@ class AdmobNativeAdScrollViewActivity : AppCompatActivity() {
         bundle.putString(TrekAdmobDataKey.CONTENT_URL, "https://agirls.aotter.net/")
         bundle.putString(TrekAdmobDataKey.CONTENT_TITLE, "電獺少女")
 
-        adRequest = AdRequest
-            .Builder()
-            .addNetworkExtrasBundle(TrekAdmobCustomEventNative::class.java, bundle)
-            .build()
+        adRequest = AdRequest.Builder()
+            .addNetworkExtrasBundle(TrekAdmobCustomEventNative::class.java, bundle).build()
 
         adLoader.loadAd(adRequest)
 
@@ -138,8 +130,7 @@ class AdmobNativeAdScrollViewActivity : AppCompatActivity() {
 
         val adUnit = "ca-app-pub-8836593984677243/1855351388"
 
-        adLoader2 = AdLoader.Builder(this, adUnit)
-            .forNativeAd { nativeAd ->
+        adLoader2 = AdLoader.Builder(this, adUnit).forNativeAd { nativeAd ->
 
                 if (!isDestroyed) {
 
@@ -152,10 +143,8 @@ class AdmobNativeAdScrollViewActivity : AppCompatActivity() {
                         val mainImg = nativeAd.extras.getString(TrekAdmobDataKey.MAIN_IMAGE)
                             ?: nativeAd.mediaContent?.mainImage
 
-                        Glide.with(this@AdmobNativeAdScrollViewActivity)
-                            .load(mainImg)
-                            .transition(DrawableTransitionOptions.withCrossFade())
-                            .into(adImg)
+                        Glide.with(this@AdmobNativeAdScrollViewActivity).load(mainImg)
+                            .transition(DrawableTransitionOptions.withCrossFade()).into(adImg)
 
                         nativeAdView.headlineView = adBody
 
@@ -169,8 +158,7 @@ class AdmobNativeAdScrollViewActivity : AppCompatActivity() {
 
                 }
 
-            }
-            .withAdListener(object : AdListener() {
+            }.withAdListener(object : AdListener() {
                 override fun onAdClicked() {
                     super.onAdClicked()
                     Log.i("adLoader", "onAdClicked2")
@@ -187,8 +175,7 @@ class AdmobNativeAdScrollViewActivity : AppCompatActivity() {
                     super.onAdLoaded()
                     Log.i("adLoader", "onAdLoaded2")
                 }
-            })
-            .build()
+            }).build()
 
         val bundle = Bundle()
 
@@ -196,10 +183,8 @@ class AdmobNativeAdScrollViewActivity : AppCompatActivity() {
         bundle.putString(TrekAdmobDataKey.CONTENT_URL, "https://agirls.aotter.net/")
         bundle.putString(TrekAdmobDataKey.CONTENT_TITLE, "電獺少女")
 
-        adRequest2 = AdRequest
-            .Builder()
-            .addNetworkExtrasBundle(TrekAdmobCustomEventNative::class.java, bundle)
-            .build()
+        adRequest2 = AdRequest.Builder()
+            .addNetworkExtrasBundle(TrekAdmobCustomEventNative::class.java, bundle).build()
 
         adLoader2.loadAd(adRequest2)
 
@@ -209,8 +194,7 @@ class AdmobNativeAdScrollViewActivity : AppCompatActivity() {
 
         val adUnit = "ca-app-pub-8836593984677243/1855351388"
 
-        adLoader3 = AdLoader.Builder(this, adUnit)
-            .forNativeAd { nativeAd ->
+        adLoader3 = AdLoader.Builder(this, adUnit).forNativeAd { nativeAd ->
 
                 if (!isDestroyed) {
 
@@ -221,9 +205,8 @@ class AdmobNativeAdScrollViewActivity : AppCompatActivity() {
                         adBody.text = nativeAd.body
 
                         Glide.with(this@AdmobNativeAdScrollViewActivity)
-                            .load(nativeAd.icon?.drawable?:"")
-                            .transition(DrawableTransitionOptions.withCrossFade())
-                            .into(adImg)
+                            .load(nativeAd.icon?.drawable ?: "")
+                            .transition(DrawableTransitionOptions.withCrossFade()).into(adImg)
 
                         nativeAdView.headlineView = adBody
 
@@ -236,27 +219,24 @@ class AdmobNativeAdScrollViewActivity : AppCompatActivity() {
                     }
 
                 }
-            }
-            .withAdListener(
-                object : AdListener() {
-                    override fun onAdClicked() {
-                        super.onAdClicked()
-                        Log.i("adLoader", "onAdClicked2")
-                    }
+            }.withAdListener(object : AdListener() {
+                override fun onAdClicked() {
+                    super.onAdClicked()
+                    Log.i("adLoader", "onAdClicked2")
+                }
 
-                    override fun onAdImpression() {
-                        super.onAdImpression()
+                override fun onAdImpression() {
+                    super.onAdImpression()
 
-                        Log.i("adLoader", "onAdImpression2")
+                    Log.i("adLoader", "onAdImpression2")
 
-                    }
+                }
 
-                    override fun onAdLoaded() {
-                        super.onAdLoaded()
-                        Log.i("adLoader", "onAdLoaded2")
-                    }
-                })
-            .build()
+                override fun onAdLoaded() {
+                    super.onAdLoaded()
+                    Log.i("adLoader", "onAdLoaded2")
+                }
+            }).build()
 
         val bundle = Bundle()
 
@@ -264,13 +244,9 @@ class AdmobNativeAdScrollViewActivity : AppCompatActivity() {
         bundle.putString(TrekAdmobDataKey.CONTENT_URL, "https://agirls.aotter.net/")
         bundle.putString(TrekAdmobDataKey.CONTENT_TITLE, "電獺少女")
 
-        adRequest3 = AdRequest
-            .Builder()
-            .addNetworkExtrasBundle(
-                TrekAdmobCustomEventNative::
-                class.java, bundle
-            )
-            .build()
+        adRequest3 = AdRequest.Builder().addNetworkExtrasBundle(
+                TrekAdmobCustomEventNative::class.java, bundle
+            ).build()
 
         adLoader3.loadAd(adRequest3)
 
