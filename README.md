@@ -5,7 +5,13 @@ https://trek.gitbook.io/aottertrek-sdk-doc/android/admob-mediation
 
 ### Trek AdMob Mediation release change log
 
-- 2022/10/03 release - Mediation `4.8.0` (Recommend)
+- 2022/11/17 release - Mediation `4.8.1` (Recommend)
+  - Fix TrekMediaview play flow
+  - New TrekNativeAdView
+  - Upgrades ExoPlayer version to 2.18.1
+  - New OnInitializationCompleteListener interface
+  - Upgrades Kotlin version to 1.7.20
+- 2022/10/03 release - Mediation `4.8.0`
   - Support new ad format of VAST XML & HTML 5
   - Log optimization
 - 2022/08/04 release - Mediation `4.7.2` 
