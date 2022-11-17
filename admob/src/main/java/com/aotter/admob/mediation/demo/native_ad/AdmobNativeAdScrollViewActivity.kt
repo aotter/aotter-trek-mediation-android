@@ -63,9 +63,7 @@ class AdmobNativeAdScrollViewActivity : AppCompatActivity() {
             .forNativeAd { nativeAd ->
 
                 if (!isDestroyed) {
-
-
-
+                    
                     adView = ItemStyle1Binding.bind(viewBinding.viewStub.inflate()).apply {
 
                         advertiser.text = nativeAd.advertiser
@@ -88,9 +86,7 @@ class AdmobNativeAdScrollViewActivity : AppCompatActivity() {
                             }
                         }
 
-                        nativeAdView.headlineView = adBody
-
-                        nativeAdView.advertiserView = advertiser
+                        nativeAdView.mediaView = mediaView
 
                         nativeAdView.setNativeAd(nativeAd)
 
