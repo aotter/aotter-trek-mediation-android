@@ -2,7 +2,7 @@ package com.aotter.trek.gam.mediation.ads
 
 import android.content.Context
 import android.util.Log
-import com.aotter.net.dto.trek.response.TrekNativeAd
+import com.aotter.net.model.trek.response.TrekNativeAd
 import com.aotter.net.trek.ads.TrekAdListener
 import com.aotter.trek.gam.mediation.BuildConfig
 import com.google.android.gms.ads.AdError

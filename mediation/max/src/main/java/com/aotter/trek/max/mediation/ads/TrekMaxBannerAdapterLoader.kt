@@ -1,7 +1,7 @@
 package com.aotter.trek.max.mediation.ads
 
 import android.util.Log
-import com.aotter.net.dto.trek.response.TrekNativeAd
+import com.aotter.net.model.trek.response.TrekNativeAd
 import com.aotter.net.trek.ads.TrekAdListener
 import com.aotter.net.trek.ads.TrekBannerAdView
 import com.applovin.mediation.adapter.MaxAdapterError
