@@ -6,8 +6,9 @@ import android.os.Bundle
 import android.util.Log
 import com.aotter.net.model.trek.response.TrekNativeAd
 import com.aotter.net.trek.ads.TrekAdListener
-import com.aotter.net.trek.ads.TrekAdViewBinder
 import com.aotter.net.trek.ads.TrekMediaView
+import com.aotter.net.utils.TrekAdViewUtils
+import com.aotter.net.utils.ViewStateTracker
 import com.aotter.trek.max.mediation.TrekMaxDataKey
 import com.applovin.mediation.MaxAdFormat
 import com.applovin.mediation.adapter.MaxAdapterError
@@ -25,7 +26,7 @@ class TrekMaxNativeAdapterLoader(
 
     var trekNativeAd: TrekNativeAd? = null
 
-    var trekAdViewBinder: TrekAdViewBinder? = null
+    var viewStateTracker: ViewStateTracker? = null
 
     private val trekMediaView by lazy {
 
@@ -128,12 +129,11 @@ class TrekMaxNativeAdapterLoader(
                         trekMediaView.tag
                     )
 
-                trekAdViewBinder =
-                    TrekAdViewBinder(maxNativeAdView, trekMediaView, trekNativeAd).apply {
+                viewStateTracker = TrekAdViewUtils.createViewStateTracker(trekNativeAd).apply {
 
-                        this.bindAdView()
+                    this.launchViewStateTracker(maxNativeAdView,trekMediaView)
 
-                    }
+                }
 
                 Log.i(TAG, "Prepare view for interaction finish.")
 

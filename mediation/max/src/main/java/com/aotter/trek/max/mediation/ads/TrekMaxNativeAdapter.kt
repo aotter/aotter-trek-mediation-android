@@ -102,7 +102,7 @@ class TrekMaxNativeAdapter(appLovinSdk: AppLovinSdk) : TrekMaxAdapterBase(appLov
 
     override fun onDestroy() {
 
-        trekMaxNativeAdapterLoader?.trekAdViewBinder?.destroy()
+        trekMaxNativeAdapterLoader?.viewStateTracker?.destroy()
 
         Log.i(TAG, "NativeAd Destroy.")
 
