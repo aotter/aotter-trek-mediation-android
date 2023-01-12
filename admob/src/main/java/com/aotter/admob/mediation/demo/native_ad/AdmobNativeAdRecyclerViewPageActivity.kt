@@ -89,7 +89,7 @@ class AdmobNativeAdRecyclerViewPageActivity : AppCompatActivity() {
 
                     data.adView = createAdView(nativeAd,true)
 
-                    list.add(1, data)
+                    list.add(4, data)
 
                     admobNativeAdAdapter.submitList(list.toList()) {
 
