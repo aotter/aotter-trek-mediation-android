@@ -2,7 +2,7 @@ package com.aotter.trek.admob.mediation.ads
 
 import android.util.Log
 import android.view.View
-import com.aotter.net.model.trek.response.TrekNativeAd
+import com.aotter.net.dto.trek.response.TrekNativeAd
 import com.aotter.net.trek.ads.TrekAdListener
 import com.aotter.net.trek.ads.TrekBannerAdView
 import com.aotter.trek.admob.mediation.BuildConfig

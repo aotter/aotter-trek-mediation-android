@@ -7,8 +7,8 @@ import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
-import com.aotter.net.model.trek.response.Img
-import com.aotter.net.model.trek.response.TrekNativeAd
+import com.aotter.net.dto.trek.response.Img
+import com.aotter.net.dto.trek.response.TrekNativeAd
 import com.aotter.net.trek.ads.TrekMediaView
 import com.aotter.net.utils.TrekAdViewUtils
 import com.aotter.net.utils.ViewStateTracker
