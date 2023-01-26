@@ -11,7 +11,6 @@ import com.aotter.net.dto.trek.response.Img
 import com.aotter.net.dto.trek.response.TrekNativeAd
 import com.aotter.net.trek.ads.TrekMediaView
 import com.aotter.net.utils.TrekAdViewUtils
-import com.aotter.net.utils.ViewStateTracker
 import com.aotter.trek.gam.mediation.TrekGamDataKey
 import com.google.android.gms.ads.formats.NativeAd
 import com.google.android.gms.ads.mediation.UnifiedNativeAdMapper
@@ -26,8 +25,6 @@ class TrekGamUnifiedNativeAdMapper(private val context: Context) : UnifiedNative
     }
 
     private var trekNativeAd: TrekNativeAd? = null
-
-    private var viewStateTracker: ViewStateTracker? = null
 
     private val trekMediaView by lazy {
 
@@ -146,9 +143,9 @@ class TrekGamUnifiedNativeAdMapper(private val context: Context) : UnifiedNative
 
                 }
 
-                viewStateTracker = TrekAdViewUtils.createViewStateTracker(trekNativeAd).apply {
+                TrekAdViewUtils.createViewStateTracker(trekNativeAd).apply {
 
-                    this.launchViewStateTracker(nativeAdView,mediaView)
+                    this.launchViewStateTracker(nativeAdView, mediaView)
 
                 }
 
@@ -161,7 +158,11 @@ class TrekGamUnifiedNativeAdMapper(private val context: Context) : UnifiedNative
     override fun untrackView(view: View) {
         super.untrackView(view)
 
-        viewStateTracker?.destroy()
+        trekNativeAd?.let {
+
+            TrekAdViewUtils.destroyAd(it)
+
+        }
 
     }
 

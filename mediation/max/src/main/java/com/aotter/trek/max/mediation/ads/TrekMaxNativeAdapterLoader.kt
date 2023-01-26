@@ -8,7 +8,6 @@ import com.aotter.net.dto.trek.response.TrekNativeAd
 import com.aotter.net.trek.ads.TrekAdListener
 import com.aotter.net.trek.ads.TrekMediaView
 import com.aotter.net.utils.TrekAdViewUtils
-import com.aotter.net.utils.ViewStateTracker
 import com.aotter.trek.max.mediation.TrekMaxDataKey
 import com.applovin.mediation.MaxAdFormat
 import com.applovin.mediation.adapter.MaxAdapterError
@@ -25,8 +24,6 @@ class TrekMaxNativeAdapterLoader(
     private var TAG: String = TrekMaxNativeAdapterLoader::class.java.simpleName
 
     var trekNativeAd: TrekNativeAd? = null
-
-    var viewStateTracker: ViewStateTracker? = null
 
     private val trekMediaView by lazy {
 
@@ -129,9 +126,9 @@ class TrekMaxNativeAdapterLoader(
                         trekMediaView.tag
                     )
 
-                viewStateTracker = TrekAdViewUtils.createViewStateTracker(trekNativeAd).apply {
+                TrekAdViewUtils.createViewStateTracker(trekNativeAd).apply {
 
-                    this.launchViewStateTracker(maxNativeAdView,trekMediaView)
+                    this.launchViewStateTracker(maxNativeAdView, trekMediaView)
 
                 }
 

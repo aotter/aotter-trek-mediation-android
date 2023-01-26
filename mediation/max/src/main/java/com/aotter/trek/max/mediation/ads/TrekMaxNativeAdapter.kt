@@ -5,6 +5,7 @@ import android.util.Log
 import com.aotter.net.trek.TrekAds
 import com.aotter.net.trek.ads.TrekAdLoader
 import com.aotter.net.trek.ads.TrekAdRequest
+import com.aotter.net.utils.TrekAdViewUtils
 import com.aotter.trek.max.mediation.BuildConfig
 import com.applovin.mediation.adapter.listeners.MaxNativeAdAdapterListener
 import com.applovin.mediation.adapter.parameters.MaxAdapterResponseParameters
@@ -102,10 +103,13 @@ class TrekMaxNativeAdapter(appLovinSdk: AppLovinSdk) : TrekMaxAdapterBase(appLov
 
     override fun onDestroy() {
 
-        trekMaxNativeAdapterLoader?.viewStateTracker?.destroy()
+        trekMaxNativeAdapterLoader?.trekNativeAd?.let {
+
+            TrekAdViewUtils.destroyAd(it)
+
+        }
 
         Log.i(TAG, "NativeAd Destroy.")
-
 
     }
 
