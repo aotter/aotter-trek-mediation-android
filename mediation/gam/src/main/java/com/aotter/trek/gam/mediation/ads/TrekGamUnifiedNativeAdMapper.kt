@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.view.View
 import com.aotter.net.dto.trek.response.Img
 import com.aotter.net.dto.trek.response.TrekNativeAd
+import com.aotter.net.trek.TrekDataKey
 import com.aotter.net.trek.ads.TrekMediaView
 import com.aotter.net.utils.TrekAdViewUtils
 import com.aotter.trek.gam.mediation.TrekGamDataKey
@@ -135,7 +136,7 @@ class TrekGamUnifiedNativeAdMapper(private val context: Context) : UnifiedNative
             (containerView as? NativeAdView)?.let { nativeAdView ->
 
                 val mediaView: TrekMediaView? =
-                    nativeAdView.mediaView?.findViewWithTag(trekMediaView.tag)
+                    nativeAdView.mediaView?.findViewWithTag(TrekDataKey.TREK_MEDIA_VIEW_TAG)
 
                 clickableAssetViews.values.forEach { view ->
 

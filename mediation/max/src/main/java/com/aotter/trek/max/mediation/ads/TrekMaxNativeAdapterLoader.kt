@@ -5,6 +5,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import com.aotter.net.dto.trek.response.TrekNativeAd
+import com.aotter.net.trek.TrekDataKey
 import com.aotter.net.trek.ads.TrekAdListener
 import com.aotter.net.trek.ads.TrekMediaView
 import com.aotter.net.utils.TrekAdViewUtils
@@ -123,7 +124,7 @@ class TrekMaxNativeAdapterLoader(
 
                 val trekMediaView: TrekMediaView? =
                     maxNativeAdView.mediaContentViewGroup?.findViewWithTag(
-                        trekMediaView.tag
+                        TrekDataKey.TREK_MEDIA_VIEW_TAG
                     )
 
                 TrekAdViewUtils.createViewStateTracker(trekNativeAd).apply {
