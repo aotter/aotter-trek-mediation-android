@@ -4,29 +4,36 @@
 https://trek.gitbook.io/aottertrek-sdk-doc/android/admob-mediation
 
 ### Trek AdMob Mediation release change log
-- 2022/08/04 release - Mediation `4.7.2` (Recommend)
+- 2023/01/30 release - Mediation `4.8.3` (Recommend)
+  - Add friendly obstrction method
+  - Fix Mediation low in view rate  in OM SDK
+  - Replace `TrekAdViewBinder` with `TrekAdViewUtils`
+- 2022/10/03 release - Mediation `4.8.1`
+  - Fix TrekMediaview play flow
+  - New TrekNativeAdView
+  - Upgrades ExoPlayer version to 2.18.1
+  - New OnInitializationCompleteListener interface
+  - Upgrades Kotlin version to 1.7.20
+- 2022/10/03 release - Mediation `4.8.0`
+  - Support new ad format of VAST XML & HTML 5
+  - Log optimization
+- 2022/08/04 release - Mediation `4.7.2`
   - TrekBannerAdView new feature
     - preload
     - auto refresh
   - TrekNativeAd object new feature
-    - `images` object provider `drawable` 、`uri`
-    -  remove unnecessary parameter
-  - **After version 4.7.2 , we had been changed trek and mediation dependencies path**
-    - trek : `implementation 'com.aotter.android:trek-ads:4.7.2'`
-    - trek admob mediation : ` implementation 'com.aotter.android:trek-admob-mediation:4.7.2'`
-   - **After version 4.7.2 , we had been changed mediation custom class path**
-     -  Native Ad :  `com.aotter.trek.admob.mediation.ads.TrekAdmobCustomEventNative`
-     -  Banner Ad : `com.aotter.trek.admob.mediation.ads.TrekAdmobCustomEventBanner`
+     - `images` object provider `drawable` 、`uri`
+     -  remove unnecessary parameter
 - 2022/06/22 release - Mediation `4.6.1`
      - New Sensor
-     -  `TrekAdLoader` instead of `TrekAd`
+     - Replace `TrekAd` with `TrekAdLoader`
      - The `TrekAdLoader.loadAds()` method sends a request for multiple ads (up to 5)
-     - `TrekNativeAd` instead of `AdData`
-     - `TrekAds.initialize() method` instead of  `AotterService.initialize() method`
-     - `TrekBannerAdView` instead of `TrekBannerView `
+     - Replace `AdData` with `TrekNativeAd`
+     - Replace `AotterService.initialize() method` with `TrekAds.initialize() method`
+     - Replace `TrekBannerView` with `TrekBannerAdView`
      - New `TrekAdViewBinder` object (Using the object register ad layout)
-     - `TrekJsonObject` instead of `JsonObject`
-     - Kotlinx-serialization instead of Gson
+     - Replace `JsonObject` with `TrekJsonObject`
+     - Replace Gson with Kotlinx-serialization
      - Updating ExoPlayer version to `2.17.1`
      - Updating Kotlin version to `1.6.21`
 - 2022/06/22 release - Mediation `4.5.0`
@@ -53,7 +60,7 @@ https://trek.gitbook.io/aottertrek-sdk-doc/android/admob-mediation
      - improve BackgroundHolder setting
      - update ExoPlayer
 - 2021/12/23 release - Mediation `4.3.4`
-     - use Activity page (instead of DialogFragment page) when context comes from the application
+     - use Activity page when context comes from the application
 - 2021/12/01 release - Mediation `4.3.2`
      - support android 12
      - support kotlin version 1.5.31
