@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
+import androidx.core.view.forEach
 import com.aotter.net.dto.trek.response.TrekNativeAd
 import com.aotter.net.trek.TrekDataKey
 import com.aotter.net.trek.ads.TrekAdListener
@@ -128,6 +129,14 @@ class TrekMaxNativeAdapterLoader(
                     )
 
                 TrekAdViewUtils.createViewStateTracker(trekNativeAd).apply {
+
+                    this.removeAllFriendlyObstructions()
+
+                    maxNativeAdView.forEach { view->
+
+                        this.addFriendlyObstruction(view)
+
+                    }
 
                     this.launchViewStateTracker(maxNativeAdView, trekMediaView)
 

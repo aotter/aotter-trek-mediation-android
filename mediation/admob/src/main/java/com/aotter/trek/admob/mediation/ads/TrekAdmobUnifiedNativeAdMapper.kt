@@ -7,6 +7,7 @@ import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import androidx.core.view.forEach
 import com.aotter.net.dto.trek.response.Img
 import com.aotter.net.dto.trek.response.TrekNativeAd
 import com.aotter.net.trek.TrekDataKey
@@ -147,6 +148,14 @@ class TrekAdmobUnifiedNativeAdMapper(private val context: Context) : UnifiedNati
                 }
 
                 TrekAdViewUtils.createViewStateTracker(trekNativeAd).apply {
+
+                    this.removeAllFriendlyObstructions()
+
+                    nativeAdView.forEach { view->
+
+                        this.addFriendlyObstruction(view)
+
+                    }
 
                     this.launchViewStateTracker(nativeAdView, mediaView)
 
