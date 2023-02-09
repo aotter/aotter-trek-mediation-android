@@ -149,8 +149,6 @@ class TrekAdmobUnifiedNativeAdMapper(private val context: Context) : UnifiedNati
 
                 TrekAdViewUtils.createViewStateTracker(trekNativeAd).apply {
 
-                    this.removeAllFriendlyObstructions()
-
                     nativeAdView.forEach { view->
 
                         this.addFriendlyObstruction(view)

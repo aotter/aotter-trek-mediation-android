@@ -130,8 +130,6 @@ class TrekMaxNativeAdapterLoader(
 
                 TrekAdViewUtils.createViewStateTracker(trekNativeAd).apply {
 
-                    this.removeAllFriendlyObstructions()
-
                     maxNativeAdView.forEach { view->
 
                         this.addFriendlyObstruction(view)
