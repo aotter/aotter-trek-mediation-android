@@ -55,8 +55,8 @@ class TrekMaxNativeAdapterLoader(
             .setIcon(imgIconHd)
             .setMainImage(imgMain)
             .setMediaView(trekMediaView)
-            .setTitle(trekNativeAd.title ?: "")
-            .setBody(trekNativeAd.text ?: "")
+            .setTitle(trekNativeAd.headline ?: "")
+            .setBody(trekNativeAd.body ?: "")
             .setAdvertiser(trekNativeAd.advertiserName ?: "")
             .setCallToAction(trekNativeAd.callToAction ?: "")
 

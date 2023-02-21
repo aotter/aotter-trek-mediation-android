@@ -8,7 +8,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import androidx.core.view.forEach
-import com.aotter.net.dto.trek.response.Img
+import com.aotter.net.dto.trek.response.ImgSrc
 import com.aotter.net.dto.trek.response.TrekNativeAd
 import com.aotter.net.trek.TrekDataKey
 import com.aotter.net.trek.ads.TrekMediaView
@@ -46,9 +46,9 @@ class TrekAdmobUnifiedNativeAdMapper(private val context: Context) : UnifiedNati
 
         this.trekNativeAd = trekNativeAd
 
-        headline = trekNativeAd.title ?: ""
+        headline = trekNativeAd.headline ?: ""
 
-        body = trekNativeAd.text ?: ""
+        body = trekNativeAd.body ?: ""
 
         callToAction = trekNativeAd.callToAction ?: ""
 
@@ -62,7 +62,7 @@ class TrekAdmobUnifiedNativeAdMapper(private val context: Context) : UnifiedNati
             ), trekNativeAd.imgIconHd.uri ?: Uri.parse(""), IMAGE_SCALE
         )
 
-        setTrekImagesToAdmobImages(trekNativeAd.imgs)
+        setTrekImagesToAdmobImages(trekNativeAd.images)
 
         price = ""
 
@@ -94,7 +94,7 @@ class TrekAdmobUnifiedNativeAdMapper(private val context: Context) : UnifiedNati
 
     }
 
-    private fun setTrekImagesToAdmobImages(trekImages: List<Img>) {
+    private fun setTrekImagesToAdmobImages(trekImages: List<ImgSrc>) {
 
         val imageList = mutableListOf<NativeAd.Image>()
 
