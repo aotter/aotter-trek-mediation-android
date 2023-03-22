@@ -29,7 +29,7 @@ class TrekMaxNativeAdapterLoader(
 
     private val trekMediaView by lazy {
 
-        TrekMediaView(context, null)
+        TrekMediaView(context)
 
     }
 

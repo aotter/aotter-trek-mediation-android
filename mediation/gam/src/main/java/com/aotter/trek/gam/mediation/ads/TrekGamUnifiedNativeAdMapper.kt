@@ -30,7 +30,7 @@ class TrekGamUnifiedNativeAdMapper(private val context: Context) : UnifiedNative
 
     private val trekMediaView by lazy {
 
-        TrekMediaView(context, null)
+        TrekMediaView(context)
 
     }
 
