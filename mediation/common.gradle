@@ -4,7 +4,7 @@ apply plugin : 'org.jetbrains.kotlin.android'
 apply plugin : 'maven-publish'
 
 android {
-    compileSdk 31
+    compileSdk 33
 
     buildFeatures {
         viewBinding  true
@@ -12,7 +12,7 @@ android {
 
     defaultConfig {
         minSdk 21
-        targetSdk 31
+        targetSdk 33
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -44,7 +44,7 @@ android {
 
 dependencies {
 
-    implementation 'com.aotter.android:trek-ads:4.9.0'
+    implementation 'com.aotter.android:trek-ads:5.0.1'
 
     implementation 'androidx.core:core-ktx:1.8.0'
     implementation 'androidx.appcompat:appcompat:1.4.2'
