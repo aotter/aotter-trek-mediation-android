@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<issues format="6" by="lint 8.0.2" type="baseline" client="gradle" dependencies="false" name="AGP (8.0.2)" variant="all" version="8.0.2">
+
+    <issue
+        id="ObsoleteLintCustomCheck"
+        message="Library lint checks out of date;&#xA;these checks **will be skipped**!&#xA;&#xA;Lint found an issue registry (`androidx.annotation.experimental.lint.ExperimentalIssueRegistry`)&#xA;which was compiled against an older version of lint&#xA;than this one. This is usually fine, but not in this&#xA;case; some basic verification shows that the lint&#xA;check jar references (for example) the following API&#xA;which is no longer valid in this version of lint:&#xA;com.android.tools.lint.client.api.AnnotationLookup: org.jetbrains.uast.UAnnotation findRealAnnotation(com.intellij.psi.PsiAnnotation,com.intellij.psi.PsiClass,org.jetbrains.uast.UElement)&#xA;(Referenced from androidx/annotation/experimental/lint/ExperimentalDetector.class)&#xA;&#xA;Therefore, this lint check library is **not** included&#xA;in analysis. This affects the following lint checks:&#xA;`UnsafeOptInUsageError`,`UnsafeOptInUsageWarning`,`ExperimentalAnnotationRetention`&#xA;&#xA;Recompile the checks against the latest version, or if&#xA;this is a check bundled with a third-party library, see&#xA;if there is a more recent version available.&#xA;&#xA;Version of Lint API this lint check is using is 11.&#xA;The Lint API version currently running is 14 (8.0+).">
+        <location
+            file="$HOME/caches/transforms-3/cb1e9b10b5c9d252849fef8096f0a8af/transformed/annotation-experimental-1.2.0/jars/lint.jar"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of com.google.android.gms:play-services-ads than 21.3.0 is available: 23.5.0"
+        errorLine1="    implementation &apos;com.google.android.gms:play-services-ads:21.3.0&apos;"
+        errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="build.gradle"
+            line="16"
+            column="20"/>
+    </issue>
+
+</issues>
