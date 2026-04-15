@@ -4,7 +4,7 @@ apply plugin : 'org.jetbrains.kotlin.android'
 apply plugin : 'maven-publish'
 
 android {
-    compileSdk 33
+    compileSdk 35
 
     buildFeatures {
         viewBinding  true
@@ -17,7 +17,7 @@ android {
 
     defaultConfig {
         minSdk 21
-        targetSdk 33
+        targetSdk 35
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"

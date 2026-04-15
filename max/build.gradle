@@ -4,16 +4,20 @@ plugins {
 }
 
 android {
-    compileSdk 33
+    compileSdk 35
 
     buildFeatures {
         viewBinding  true
     }
 
+    lint {
+        baseline = file("lint-baseline.xml")
+    }
+
     defaultConfig {
         applicationId "com.aotter.max.mediation.demo"
         minSdk 21
-        targetSdk 33
+        targetSdk 35
         versionCode 1
         versionName "1.0"
         multiDexEnabled true
