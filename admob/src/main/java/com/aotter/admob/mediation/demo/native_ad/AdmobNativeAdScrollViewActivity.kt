@@ -74,10 +74,10 @@ class AdmobNativeAdScrollViewActivity : AppCompatActivity() {
 
                         mediaView.setImageScaleType(ImageView.ScaleType.FIT_XY)
 
-                        if ((nativeAd.mediaContent?.aspectRatio ?: 0.0f) > 1f) {
+                        nativeAd.mediaContent?.aspectRatio?.takeIf { it > 0f }?.let { ratio ->
                             mediaView.post {
 
-                                val height = (this.root.measuredWidth * 0.5625f).roundToInt()
+                                val height = (mediaView.measuredWidth / ratio).roundToInt()
 
                                 mediaView.layoutParams.height = height
 
