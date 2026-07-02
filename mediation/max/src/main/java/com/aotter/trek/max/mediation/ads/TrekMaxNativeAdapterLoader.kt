@@ -60,6 +60,13 @@ class TrekMaxNativeAdapterLoader(
             .setAdvertiser(trekNativeAd.advertiserName ?: "")
             .setCallToAction(trekNativeAd.callToAction ?: "")
 
+        trekNativeAd.mediaContentAspectRatio?.takeIf { it > 0f && it.isFinite() }?.let {
+
+            //Trek 內部的 aspectRatio 為 height/width，MAX 定義為 width/height，需取倒數
+            builder.setMediaContentAspectRatio(1f / it)
+
+        }
+
 
         val trekMaxNativeAd = TrekMaxNativeAd(builder, trekNativeAd)
 
