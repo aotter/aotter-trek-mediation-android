@@ -8,7 +8,7 @@ import com.aotter.trek.admob.mediation.extension.getVersion
 import com.google.android.gms.ads.mediation.Adapter
 import com.google.android.gms.ads.mediation.InitializationCompleteCallback
 import com.google.android.gms.ads.mediation.MediationConfiguration
-import com.google.android.gms.ads.mediation.VersionInfo
+import com.google.android.gms.ads.VersionInfo
 import org.json.JSONObject
 
 abstract class TrekAdmobCustomEventBase : Adapter() {

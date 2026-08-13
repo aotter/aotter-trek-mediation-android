@@ -1,6 +1,6 @@
 package com.aotter.trek.admob.mediation.extension
 
-import com.google.android.gms.ads.mediation.VersionInfo
+import com.google.android.gms.ads.VersionInfo
 
 fun String.getVersion(): VersionInfo {
 
