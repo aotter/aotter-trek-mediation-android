@@ -4,7 +4,8 @@ import com.google.android.gms.ads.VersionInfo
 
 fun String.getVersion(): VersionInfo {
 
-    val versionNumber = this.split(".")
+    //MEDIATION_VERSION 形如 "GAM_5.0.9"，先取最後一段底線後的版本再解析，避免 "GAM_5".toInt() 拋 NumberFormatException
+    val versionNumber = this.substringAfterLast('_').split(".")
 
     if (versionNumber.count() >= 3) {
 
