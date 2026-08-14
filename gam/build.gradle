@@ -1,6 +1,5 @@
 plugins {
     id 'com.android.application'
-    id 'org.jetbrains.kotlin.android'
 }
 
 android {
@@ -16,7 +15,7 @@ android {
 
     defaultConfig {
         applicationId "com.aotter.gam.mediation.demo"
-        minSdk 21
+        minSdk 23
         targetSdk 35
         versionCode 1
         versionName "1.0"
@@ -38,9 +37,6 @@ android {
         sourceCompatibility JavaVersion.VERSION_11
         targetCompatibility JavaVersion.VERSION_11
     }
-    kotlinOptions {
-        jvmTarget = '11'
-    }
     namespace 'com.aotter.gam.mediation.demo'
 }
 
@@ -52,7 +48,7 @@ dependencies {
     //Glide
     implementation 'com.github.bumptech.glide:glide:4.14.2'
 
-    implementation 'com.google.android.gms:play-services-ads:21.4.0'
+    implementation 'com.google.android.gms:play-services-ads:25.3.0'
 
     implementation project(':mediation')
 
