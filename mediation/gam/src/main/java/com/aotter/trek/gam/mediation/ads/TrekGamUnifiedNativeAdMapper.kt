@@ -75,6 +75,13 @@ class TrekGamUnifiedNativeAdMapper(private val context: Context) : UnifiedNative
 
         setHasVideoContent(trekNativeAd.isVideoAd())
 
+        trekNativeAd.mediaContentAspectRatio?.takeIf { it > 0f && it.isFinite() }?.let {
+
+            //Trek 內部的 aspectRatio 為 height/width，AdMob MediaContent 定義為 width/height，需取倒數
+            mediaContentAspectRatio = 1f / it
+
+        }
+
         setMediaView(trekMediaView)
 
         val bundle = Bundle()

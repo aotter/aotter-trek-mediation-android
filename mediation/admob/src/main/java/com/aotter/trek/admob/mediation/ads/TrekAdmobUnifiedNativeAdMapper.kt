@@ -72,9 +72,10 @@ class TrekAdmobUnifiedNativeAdMapper(private val context: Context) : UnifiedNati
 
         setHasVideoContent(trekNativeAd.isVideoAd())
 
-        trekNativeAd.mediaContentAspectRatio?.let {
+        trekNativeAd.mediaContentAspectRatio?.takeIf { it > 0f && it.isFinite() }?.let {
 
-            mediaContentAspectRatio = it
+            //Trek 內部的 aspectRatio 為 height/width，AdMob MediaContent 定義為 width/height，需取倒數
+            mediaContentAspectRatio = 1f / it
 
         }
 
