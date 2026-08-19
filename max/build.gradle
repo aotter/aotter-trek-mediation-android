@@ -50,7 +50,10 @@ dependencies {
 
     implementation 'com.applovin:applovin-sdk:11.5.2'
 
-    implementation project(':mediation')
+    //A MAX integration only needs the MAX adapter. Depending on the umbrella would also pull in
+    //the AdMob and AdManager adapters, and with them the Google Mobile Ads SDK, whose
+    //MobileAdsInitProvider aborts startup unless the manifest declares an AdMob APPLICATION_ID.
+    implementation project(':mediation:max')
 
     implementation 'androidx.core:core-ktx:1.8.0'
     implementation 'androidx.appcompat:appcompat:1.4.2'
