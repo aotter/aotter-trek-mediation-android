@@ -50,7 +50,9 @@ dependencies {
 
     implementation 'com.google.android.gms:play-services-ads:25.3.0'
 
-    implementation project(':mediation')
+    //Each sample depends only on the adapter its network needs, matching what a real
+    //integration installs; the umbrella would also pull in the other networks' adapters.
+    implementation project(':mediation:gam')
 
     implementation 'androidx.core:core-ktx:1.8.0'
     implementation 'androidx.appcompat:appcompat:1.4.2'

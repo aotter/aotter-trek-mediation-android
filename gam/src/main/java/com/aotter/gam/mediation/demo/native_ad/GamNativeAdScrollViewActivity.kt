@@ -8,7 +8,6 @@ import com.aotter.gam.mediation.demo.databinding.ActivityGamNativeAdScrollViewBi
 import com.aotter.gam.mediation.demo.databinding.ItemStyle1Binding
 import com.aotter.gam.mediation.demo.databinding.ItemStyle2Binding
 import com.aotter.gam.mediation.demo.databinding.ItemStyle3Binding
-import com.aotter.trek.admob.mediation.TrekAdmobDataKey
 import com.aotter.trek.gam.mediation.TrekGamDataKey
 import com.aotter.trek.gam.mediation.ads.TrekGamCustomEventNative
 import com.bumptech.glide.Glide
@@ -152,7 +151,7 @@ class GamNativeAdScrollViewActivity : AppCompatActivity() {
 
                         adBody.text = nativeAd.headline
 
-                        val mainImg = nativeAd.extras.getString(TrekAdmobDataKey.MAIN_IMAGE)
+                        val mainImg = nativeAd.extras.getString(TrekGamDataKey.MAIN_IMAGE)
                             ?: nativeAd.mediaContent?.mainImage
 
                         Glide.with(this@GamNativeAdScrollViewActivity)
