@@ -41,6 +41,8 @@ abstract class TrekGamCustomEventBase : Adapter() {
         mediationConfigurations: MutableList<MediationConfiguration>
     ) {
 
+        initializationCompleteCallback.onInitializationSucceeded()
+
     }
 
 }

@@ -41,6 +41,8 @@ abstract class TrekAdmobCustomEventBase : Adapter() {
         mediationConfigurations: MutableList<MediationConfiguration>
     ) {
 
+        initializationCompleteCallback.onInitializationSucceeded()
+
     }
 
 }
