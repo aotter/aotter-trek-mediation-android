@@ -10,4 +10,7 @@ object TrekAdmobDataKey {
     const val ICON_IMAGE_HD = "IconImageHd"
     const val SPONSOR = "Sponsor"
 
+    const val AD_SIZE_WIDTH = "adSizeWidth"
+    const val AD_SIZE_HEIGHT = "adSizeHeight"
+
 }

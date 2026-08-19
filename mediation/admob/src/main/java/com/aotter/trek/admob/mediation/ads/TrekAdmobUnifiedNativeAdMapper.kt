@@ -74,7 +74,8 @@ class TrekAdmobUnifiedNativeAdMapper(private val context: Context) : UnifiedNati
 
         trekNativeAd.mediaContentAspectRatio?.takeIf { it > 0f && it.isFinite() }?.let {
 
-            //Trek 內部的 aspectRatio 為 height/width，AdMob MediaContent 定義為 width/height，需取倒數
+            //Trek reports aspectRatio as height/width, AdMob MediaContent defines it as
+            //width/height, so it has to be inverted
             mediaContentAspectRatio = 1f / it
 
         }
@@ -90,6 +91,14 @@ class TrekAdmobUnifiedNativeAdMapper(private val context: Context) : UnifiedNati
         bundle.putString(TrekAdmobDataKey.ICON_IMAGE, trekNativeAd.imgIcon.uri.toString())
 
         bundle.putString(TrekAdmobDataKey.ICON_IMAGE_HD, trekNativeAd.imgIconHd.uri.toString())
+
+        if (trekNativeAd.mediaWidth > 0 && trekNativeAd.mediaHeight > 0) {
+
+            bundle.putString(TrekAdmobDataKey.AD_SIZE_WIDTH, trekNativeAd.mediaWidth.toString())
+
+            bundle.putString(TrekAdmobDataKey.AD_SIZE_HEIGHT, trekNativeAd.mediaHeight.toString())
+
+        }
 
         extras = bundle
 

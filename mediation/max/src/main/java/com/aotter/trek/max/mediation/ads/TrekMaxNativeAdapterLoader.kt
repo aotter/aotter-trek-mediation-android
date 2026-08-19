@@ -62,7 +62,8 @@ class TrekMaxNativeAdapterLoader(
 
         trekNativeAd.mediaContentAspectRatio?.takeIf { it > 0f && it.isFinite() }?.let {
 
-            //Trek 內部的 aspectRatio 為 height/width，MAX 定義為 width/height，需取倒數
+            //Trek reports aspectRatio as height/width, MAX defines it as width/height,
+            //so it has to be inverted
             builder.setMediaContentAspectRatio(1f / it)
 
         }
@@ -116,6 +117,14 @@ class TrekMaxNativeAdapterLoader(
             bundle.putString(TrekMaxDataKey.ICON_IMAGE, this.imgIcon.uri.toString())
 
             bundle.putString(TrekMaxDataKey.ICON_IMAGE_HD, this.imgIconHd.uri.toString())
+
+            if (this.mediaWidth > 0 && this.mediaHeight > 0) {
+
+                bundle.putString(TrekMaxDataKey.AD_SIZE_WIDTH, this.mediaWidth.toString())
+
+                bundle.putString(TrekMaxDataKey.AD_SIZE_HEIGHT, this.mediaHeight.toString())
+
+            }
 
         }
 

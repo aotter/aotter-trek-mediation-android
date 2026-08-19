@@ -32,6 +32,11 @@ abstract class TrekMaxAdapterBase(appLovinSdk: AppLovinSdk) :
         onCompletionListener: MaxAdapter.OnCompletionListener?
     ) {
 
+        onCompletionListener?.onCompletion(
+            MaxAdapter.InitializationStatus.INITIALIZED_SUCCESS,
+            null
+        )
+
     }
 
     override fun getSdkVersion(): String {
