@@ -16,6 +16,8 @@ import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdLoader
 import com.google.android.gms.ads.AdRequest
 import kotlin.math.roundToInt
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 
 
 class AdmobNativeAdScrollViewActivity : AppCompatActivity() {
@@ -46,6 +48,15 @@ class AdmobNativeAdScrollViewActivity : AppCompatActivity() {
         viewBinding = ActivityAdmobNativeAdScrollViewBinding.inflate(layoutInflater)
 
         setContentView(viewBinding.root)
+
+        // Edge-to-edge (enforced on Android 15+): appcompat 1.7 hands the combined
+        // status-bar + action-bar inset to the content view; pad so nothing is covered.
+        ViewCompat.setOnApplyWindowInsetsListener(viewBinding.root) { v, insets ->
+            val sb = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(sb.left, sb.top, sb.right, sb.bottom)
+            WindowInsetsCompat.CONSUMED
+        }
+
 
         loadAdmobNativeAd()
 

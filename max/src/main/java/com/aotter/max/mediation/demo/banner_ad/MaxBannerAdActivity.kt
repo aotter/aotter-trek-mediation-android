@@ -8,6 +8,8 @@ import com.aotter.trek.max.mediation.TrekMaxDataKey
 import com.applovin.mediation.MaxAd
 import com.applovin.mediation.MaxAdViewAdListener
 import com.applovin.mediation.MaxError
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 
 
 class MaxBannerAdActivity : AppCompatActivity() {
@@ -20,6 +22,15 @@ class MaxBannerAdActivity : AppCompatActivity() {
         viewBinding = ActivityMaxBannerAdBinding.inflate(layoutInflater)
 
         setContentView(viewBinding.root)
+
+        // Edge-to-edge (enforced on Android 15+): appcompat 1.7 hands the combined
+        // status-bar + action-bar inset to the content view; pad so nothing is covered.
+        ViewCompat.setOnApplyWindowInsetsListener(viewBinding.root) { v, insets ->
+            val sb = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(sb.left, sb.top, sb.right, sb.bottom)
+            WindowInsetsCompat.CONSUMED
+        }
+
 
         getBannerAd()
 
