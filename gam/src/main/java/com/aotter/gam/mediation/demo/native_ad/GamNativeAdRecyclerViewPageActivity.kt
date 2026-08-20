@@ -232,16 +232,19 @@ class GamNativeAdRecyclerViewPageActivity : AppCompatActivity() {
 
         mediaView?.setImageScaleType(ImageView.ScaleType.FIT_XY)
 
-        nativeAd.mediaContent?.aspectRatio?.takeIf { it > 0f }?.let { ratio ->
-            mediaView?.post {
+        // Always pin the media height. Google demand rendered as HTML/video
+        // reports no aspect ratio, and a wrap_content MediaView inside this
+        // unbounded list would grow without limit.
+        val ratio = nativeAd.mediaContent?.aspectRatio?.takeIf { it > 0f } ?: (16f / 9f)
 
-                val height = (mediaView.measuredWidth / ratio).roundToInt()
+        mediaView?.post {
 
-                mediaView.layoutParams.height = height
+            val height = (mediaView.measuredWidth / ratio).roundToInt()
 
-                mediaView.requestLayout()
+            mediaView.layoutParams.height = height
 
-            }
+            mediaView.requestLayout()
+
         }
 
         adView.nativeAdView.mediaView = mediaView
