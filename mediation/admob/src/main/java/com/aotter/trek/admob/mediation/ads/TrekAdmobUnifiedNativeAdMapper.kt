@@ -7,16 +7,15 @@ import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup
 import androidx.core.view.forEach
 import com.aotter.net.dto.trek.response.ImgSrc
 import com.aotter.net.dto.trek.response.TrekNativeAd
-import com.aotter.net.trek.TrekDataKey
 import com.aotter.net.trek.ads.TrekMediaView
 import com.aotter.net.utils.TrekAdViewUtils
 import com.aotter.trek.admob.mediation.TrekAdmobDataKey
 import com.google.android.gms.ads.formats.NativeAd
 import com.google.android.gms.ads.mediation.UnifiedNativeAdMapper
-import com.google.android.gms.ads.nativead.NativeAdView
 
 class TrekAdmobUnifiedNativeAdMapper(private val context: Context) : UnifiedNativeAdMapper() {
 
@@ -146,10 +145,16 @@ class TrekAdmobUnifiedNativeAdMapper(private val context: Context) : UnifiedNati
 
         trekNativeAd?.let { trekNativeAd ->
 
-            (containerView as? NativeAdView)?.let { nativeAdView ->
+            //Cast only to ViewGroup: referencing com.google.android.gms.ads.nativead.NativeAdView
+            //here would throw NoClassDefFoundError on GMA Next-Gen SDK hosts, where the
+            //container is the next-gen NativeAdView (also a FrameLayout subclass)
+            (containerView as? ViewGroup)?.let { nativeAdView ->
 
-                val mediaView: TrekMediaView? =
-                    nativeAdView.mediaView?.findViewWithTag(TrekDataKey.TREK_MEDIA_VIEW_TAG)
+                //Use the mapper's own TrekMediaView (handed to setMediaView) directly:
+                //hosts may install it into the publisher's MediaView after trackViews
+                //runs, so any is-it-attached-yet check here would be a race, and a tag
+                //search could also match a publisher-owned view elsewhere in the tree
+                val mediaView: TrekMediaView = trekMediaView
 
                 clickableAssetViews.values.forEach { view ->
 
