@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.annotation.WorkerThread
 import com.aotter.admob.nextgen.demo.banner_ad.AdmobBannerAdScrollViewActivity
 import com.aotter.admob.nextgen.demo.databinding.ActivityAdmobBinding
 import com.aotter.admob.nextgen.demo.native_ad.AdmobNativeAdRecyclerViewPageActivity
@@ -35,11 +36,18 @@ class AdmobActivity : AppCompatActivity() {
 
         // Unlike the legacy SDK, the Next-Gen SDK takes the AdMob app ID here in
         // code; mediation adapters (Trek included) are initialized during this call.
-        MobileAds.initialize(this, InitializationConfig.Builder(ADMOB_APP_ID).build())
+        // initialize() does disk I/O and is annotated @WorkerThread, so it must not
+        // run on the main thread -- see the Next-Gen initialization guide.
+        Thread { initializeMobileAds() }.start()
 
         Log.i(TAG, "GMA Next-Gen SDK version: ${MobileAds.getVersion()}")
 
         initView()
+    }
+
+    @WorkerThread
+    private fun initializeMobileAds() {
+        MobileAds.initialize(this, InitializationConfig.Builder(ADMOB_APP_ID).build())
     }
 
     private fun initView(){
