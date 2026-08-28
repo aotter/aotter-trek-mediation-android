@@ -11,6 +11,19 @@
 
 適用三個 adapter：`trek-admob-mediation`、`trek-gam-mediation`、`trek-max-mediation`（同版本線）。
 
+## 與 Trek Ads SDK（`trek-ads`）的版本配對
+
+mediation 與 `trek-ads` 是**兩個獨立版號**：mediation 只在自身有變動時進版，配對的 `trek-ads` 由 mediation 的 POM 宣告、Gradle 自動解析——接入端**不需要**（也不應該）手動對齊兩者版號。
+
+| Trek mediation | trek-ads（POM 自動拉入） | 說明 |
+|---|---|---|
+| **5.6.3** | 5.6.2 | mediation-only 修復（無 MediaView 版型的曝光／OM 量測），SDK 無變動 |
+| 5.6.2 | 5.6.2 | |
+| 5.6.1 | 5.6.1 | |
+| 5.6.0 | 5.6.0 | |
+
+> 5.6.0–5.6.2 兩邊同號是「每版剛好都有變動」的結果，不是規則；自 5.6.3 起以本表與 POM 為準。
+
 ## 升級到 GMA 25+ 版（給接入的開發者）
 
 1. Google Mobile Ads SDK 升到 `com.google.android.gms:play-services-ads:25.x`（或更新）。
