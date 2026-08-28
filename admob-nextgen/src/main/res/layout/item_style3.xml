@@ -13,14 +13,6 @@
         android:id="@+id/nativeAdView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <!-- Invisible on purpose: the Next-Gen registerNativeAd(ad, mediaView)
-             call requires a MediaView even though this layout renders the main
-             image itself, matching the legacy demo's custom-image style. -->
-        <com.google.android.libraries.ads.mobile.sdk.nativead.MediaView
-            android:id="@+id/mediaView"
-            android:layout_width="match_parent"
-            android:layout_height="0dp" />
-
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"

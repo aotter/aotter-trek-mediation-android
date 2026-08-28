@@ -202,10 +202,11 @@ class AdmobNativeAdScrollViewActivity : AppCompatActivity() {
 
                         nativeAdView.advertiserView = advertiser
 
-                        // The Next-Gen NativeAdView has no imageView asset slot (the
-                        // legacy demo registered adImg there); the layout's invisible
-                        // MediaView satisfies registerNativeAd instead.
-                        nativeAdView.registerNativeAd(ad, mediaView)
+                        // This layout renders the main image itself, so no MediaView
+                        // asset is registered (null): the Trek adapter then measures
+                        // viewability on the container view, matching the legacy
+                        // demo's no-MediaView styles.
+                        nativeAdView.registerNativeAd(ad, null)
 
                     }
 
@@ -275,7 +276,9 @@ class AdmobNativeAdScrollViewActivity : AppCompatActivity() {
 
                         nativeAdView.advertiserView = advertiser
 
-                        nativeAdView.registerNativeAd(ad, mediaView)
+                        // Icon-only layout, no MediaView asset (null): the Trek adapter
+                        // measures viewability on the container view instead.
+                        nativeAdView.registerNativeAd(ad, null)
 
                     }
 
