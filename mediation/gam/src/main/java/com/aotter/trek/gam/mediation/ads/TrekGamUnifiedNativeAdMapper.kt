@@ -16,6 +16,7 @@ import com.aotter.net.utils.TrekAdViewUtils
 import com.aotter.trek.gam.mediation.TrekGamDataKey
 import com.google.android.gms.ads.formats.NativeAd
 import com.google.android.gms.ads.mediation.UnifiedNativeAdMapper
+import com.google.android.gms.ads.nativead.NativeAdAssetNames
 
 class TrekGamUnifiedNativeAdMapper(private val context: Context) : UnifiedNativeAdMapper() {
 
@@ -154,11 +155,24 @@ class TrekGamUnifiedNativeAdMapper(private val context: Context) : UnifiedNative
             //container is the next-gen NativeAdView (also a FrameLayout subclass)
             (containerView as? ViewGroup)?.let { nativeAdView ->
 
-                //Use the mapper's own TrekMediaView (handed to setMediaView) directly:
-                //hosts may install it into the publisher's MediaView after trackViews
-                //runs, so any is-it-attached-yet check here would be a race, and a tag
-                //search could also match a publisher-owned view elsewhere in the tree
-                val mediaView: TrekMediaView = trekMediaView
+                //The asset maps are delivered synchronously in trackViews and tell us
+                //whether the publisher's layout registered a MediaView asset, so this
+                //is not a timing-dependent check. (ASSET_MEDIA_VIDEO is a compile-time
+                //constant, so it gets inlined and no legacy class is referenced at
+                //runtime on GMA Next-Gen SDK hosts — whose own ASSET_MEDIA_CONTENT
+                //uses the same "3010" key.)
+                val hasMediaAsset =
+                    clickableAssetViews.containsKey(NativeAdAssetNames.ASSET_MEDIA_VIDEO) ||
+                            nonClickableAssetViews.containsKey(NativeAdAssetNames.ASSET_MEDIA_VIDEO)
+
+                //With a MediaView asset, measure the mapper's own TrekMediaView (handed
+                //to setMediaView) directly: hosts may install it into the publisher's
+                //MediaView only after trackViews returns, so an attach check here would
+                //race and a tag search could match a publisher-owned view. Without one,
+                //the TrekMediaView never gets attached — pass null so the tracker
+                //measures the container view; binding the orphan view would mean
+                //impressions and OM never fire.
+                val mediaView: TrekMediaView? = if (hasMediaAsset) trekMediaView else null
 
                 clickableAssetViews.values.forEach { view ->
 
