@@ -1,12 +1,13 @@
 package com.aotter.trek.max.mediation.ads
 
 import android.app.Activity
-import android.util.Log
 import com.aotter.net.trek.TrekAds
+import com.aotter.net.trek.TrekLogLevel
 import com.aotter.net.trek.ads.TrekAdLoader
 import com.aotter.net.trek.ads.TrekAdRequest
 import com.aotter.net.utils.TrekAdViewUtils
 import com.aotter.trek.max.mediation.BuildConfig
+import com.aotter.trek.max.mediation.extension.logAt
 import com.applovin.mediation.adapter.listeners.MaxNativeAdAdapterListener
 import com.applovin.mediation.adapter.parameters.MaxAdapterResponseParameters
 import com.applovin.sdk.AppLovinSdk
@@ -52,15 +53,15 @@ class TrekMaxNativeAdapter(appLovinSdk: AppLovinSdk) : TrekMaxAdapterBase(appLov
             val contentTitle =
                 trekParameters.contentTitle
 
-            Log.i(TAG, "clientId : $clientId")
+            logAt(TrekLogLevel.DETAIL, TAG, "clientId : $clientId")
 
-            Log.i(TAG, "placeUid : $placeUid")
+            logAt(TrekLogLevel.DETAIL, TAG, "placeUid : $placeUid")
 
-            Log.i(TAG, "category : $category")
+            logAt(TrekLogLevel.DETAIL, TAG, "category : $category")
 
-            Log.i(TAG, "contentUrl : $contentUrl")
+            logAt(TrekLogLevel.DETAIL, TAG, "contentUrl : $contentUrl")
 
-            Log.i(TAG, "contentTitle : $contentTitle")
+            logAt(TrekLogLevel.DETAIL, TAG, "contentTitle : $contentTitle")
 
             TrekAds.initialize(activity, clientId,
                 object : TrekAds.OnInitializationCompleteListener {
@@ -109,7 +110,7 @@ class TrekMaxNativeAdapter(appLovinSdk: AppLovinSdk) : TrekMaxAdapterBase(appLov
 
         }
 
-        Log.i(TAG, "NativeAd Destroy.")
+        logAt(TrekLogLevel.DETAIL, TAG, "NativeAd Destroy.")
 
     }
 

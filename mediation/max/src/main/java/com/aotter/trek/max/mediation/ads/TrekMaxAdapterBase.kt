@@ -1,11 +1,12 @@
 package com.aotter.trek.max.mediation.ads
 
 import android.app.Activity
-import android.util.Log
 import com.aotter.net.trek.TrekAds
+import com.aotter.net.trek.TrekLogLevel
 import com.aotter.trek.max.mediation.BuildConfig
 import com.aotter.trek.max.mediation.TrekMaxDataKey
 import com.aotter.trek.max.mediation.TrekParameters
+import com.aotter.trek.max.mediation.extension.logAt
 import com.applovin.mediation.adapter.MaxAdapter
 import com.applovin.mediation.adapter.parameters.MaxAdapterInitializationParameters
 import com.applovin.mediation.adapter.parameters.MaxAdapterResponseParameters
@@ -41,7 +42,7 @@ abstract class TrekMaxAdapterBase(appLovinSdk: AppLovinSdk) :
 
     override fun getSdkVersion(): String {
 
-        Log.i(TAG, "SdkVersion : ${TrekAds.getSdkVersion()}")
+        logAt(TrekLogLevel.DETAIL, TAG, "SdkVersion : ${TrekAds.getSdkVersion()}")
 
         return TrekAds.getSdkVersion()
 
@@ -49,7 +50,7 @@ abstract class TrekMaxAdapterBase(appLovinSdk: AppLovinSdk) :
 
     override fun getAdapterVersion(): String {
 
-        Log.i(TAG, "AdapterVersion : ${BuildConfig.MEDIATION_VERSION}")
+        logAt(TrekLogLevel.DETAIL, TAG, "AdapterVersion : ${BuildConfig.MEDIATION_VERSION}")
 
         return BuildConfig.MEDIATION_VERSION
 

@@ -1,9 +1,10 @@
 package com.aotter.trek.max.mediation.ads
 
-import android.util.Log
 import com.aotter.net.dto.trek.response.TrekNativeAd
+import com.aotter.net.trek.TrekLogLevel
 import com.aotter.net.trek.ads.TrekAdListener
 import com.aotter.net.trek.ads.TrekBannerAdView
+import com.aotter.trek.max.mediation.extension.logAt
 import com.applovin.mediation.adapter.MaxAdapterError
 import com.applovin.mediation.adapter.listeners.MaxAdViewAdapterListener
 
@@ -19,7 +20,7 @@ class TrekMaxBannerAdapterLoader(
 
         maxAdViewAdapterListener?.onAdViewAdLoadFailed(MaxAdapterError.NO_FILL)
 
-        Log.i(TAG, "Ad failed to load.")
+        logAt(TrekLogLevel.NORMAL, TAG, "Ad failed to load.")
 
     }
 
@@ -28,7 +29,7 @@ class TrekMaxBannerAdapterLoader(
 
         maxAdViewAdapterListener?.onAdViewAdLoaded(trekBannerAdView)
 
-        Log.i(TAG, "AdLoaded success.")
+        logAt(TrekLogLevel.NORMAL, TAG, "AdLoaded success.")
 
     }
 
@@ -37,7 +38,7 @@ class TrekMaxBannerAdapterLoader(
 
         maxAdViewAdapterListener?.onAdViewAdClicked()
 
-        Log.i(TAG, "Ad Clicked.")
+        logAt(TrekLogLevel.NORMAL, TAG, "Ad Clicked.")
 
     }
 
@@ -46,7 +47,7 @@ class TrekMaxBannerAdapterLoader(
 
         maxAdViewAdapterListener?.onAdViewAdDisplayed()
 
-        Log.i(TAG, "Ad impression.")
+        logAt(TrekLogLevel.NORMAL, TAG, "Ad impression.")
 
     }
 

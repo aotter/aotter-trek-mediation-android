@@ -3,8 +3,10 @@ package com.aotter.trek.gam.mediation.ads
 import android.content.Context
 import android.util.Log
 import com.aotter.net.dto.trek.response.TrekNativeAd
+import com.aotter.net.trek.TrekLogLevel
 import com.aotter.net.trek.ads.TrekAdListener
 import com.aotter.trek.gam.mediation.BuildConfig
+import com.aotter.trek.gam.mediation.extension.logAt
 import com.google.android.gms.ads.AdError
 import com.google.android.gms.ads.mediation.MediationAdLoadCallback
 import com.google.android.gms.ads.mediation.MediationNativeAdCallback
@@ -38,13 +40,13 @@ class TrekGamCustomNativeEventLoader(
 
         mediationNativeAdCallback = mediationAdLoadCallback.onSuccess(trekGamUnifiedNativeAdMapper)
 
-        Log.i(TAG, "AdLoaded success.")
+        logAt(TrekLogLevel.NORMAL, TAG, "AdLoaded success.")
 
     }
 
     override fun onAdClicked() {
 
-        Log.i(TAG, "AdClicked success.")
+        logAt(TrekLogLevel.NORMAL, TAG, "AdClicked success.")
 
         mediationNativeAdCallback?.reportAdClicked()
 
@@ -52,7 +54,7 @@ class TrekGamCustomNativeEventLoader(
 
     override fun onAdImpression() {
 
-        Log.i(TAG, "Native ad or Supr ad  impression success.")
+        logAt(TrekLogLevel.NORMAL, TAG, "Native ad or Supr ad  impression success.")
 
         mediationNativeAdCallback?.reportAdImpression()
 
