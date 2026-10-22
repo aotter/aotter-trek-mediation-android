@@ -17,7 +17,8 @@ mediation 與 `trek-ads` 是**兩個獨立版號**：mediation 只在自身有�
 
 | Trek mediation | trek-ads（POM 自動拉入） | 說明 |
 |---|---|---|
-| **5.6.3** | 5.6.2 | mediation-only 修復（無 MediaView 版型的曝光／OM 量測），SDK 無變動 |
+| **5.6.4** | 5.6.4 | 隱私修正：SDK 與 adapter 預設不再寫 logcat，adapter 的 log 改依 `TrekAds.setLogLevel`；SDK 同版升 OM SDK 1.6.9 |
+| 5.6.3 | 5.6.2 | mediation-only 修復（無 MediaView 版型的曝光／OM 量測），SDK 無變動 |
 | 5.6.2 | 5.6.2 | |
 | 5.6.1 | 5.6.1 | |
 | 5.6.0 | 5.6.0 | |
