@@ -4,7 +4,12 @@
 https://trek.gitbook.io/aottertrek-sdk-doc/android/admob-mediation
 
 ### Trek AdMob Mediation release change log
-- 2023/01/30 release - Mediation `4.8.3` (Recommend)
+- 2026/11/05 release - Mediation `5.6.5` (Recommend)
+  - Native ad extras (AdMob, Ad Manager) carry `adType`, the Trek placement type of the ad: `NATIVE` (Native Ad placement), `NATIVE_MULTIMEDIA` (Native Multimedia Ad placement) or `BANNER`
+  - When Trek has no ad to fill, the AdMob and Ad Manager adapters report `ERROR_CODE_NO_FILL`; other failures are reported as `ERROR_CODE_INTERNAL_ERROR`
+  - Depends on trek-ads `5.6.5`: load failures carry error codes (`TrekAdError`) and no longer throw when the SDK is not initialized; `constraintlayout` is exposed as an api dependency; OkHttp 4.12.1; CatRun creative display fix; new `onAdMediaLoaded`
+  - For 5.x releases before this one and the trek-ads version pairing, see `COMPATIBILITY.md`
+- 2023/01/30 release - Mediation `4.8.3`
   - Add friendly obstrction method
   - Fix Mediation low in view rate  in OM SDK
   - Replace `TrekAdViewBinder` with `TrekAdViewUtils`
