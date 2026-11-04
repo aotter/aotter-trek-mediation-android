@@ -100,6 +100,12 @@ class TrekAdmobUnifiedNativeAdMapper(private val context: Context) : UnifiedNati
 
         }
 
+        TrekAdmobDataKey.adTypeOf(trekNativeAd.adType)?.let {
+
+            bundle.putString(TrekAdmobDataKey.AD_TYPE, it)
+
+        }
+
         extras = bundle
 
     }

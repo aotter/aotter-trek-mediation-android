@@ -127,6 +127,12 @@ class TrekMaxNativeAdapterLoader(
 
             }
 
+            TrekMaxDataKey.adTypeOf(this.adType)?.let {
+
+                bundle.putString(TrekMaxDataKey.AD_TYPE, it)
+
+            }
+
         }
 
         return bundle

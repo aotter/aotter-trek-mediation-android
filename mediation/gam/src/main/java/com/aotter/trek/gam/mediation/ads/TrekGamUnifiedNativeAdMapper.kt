@@ -103,6 +103,12 @@ class TrekGamUnifiedNativeAdMapper(private val context: Context) : UnifiedNative
 
         }
 
+        TrekGamDataKey.adTypeOf(trekNativeAd.adType)?.let {
+
+            bundle.putString(TrekGamDataKey.AD_TYPE, it)
+
+        }
+
         extras = bundle
 
     }
