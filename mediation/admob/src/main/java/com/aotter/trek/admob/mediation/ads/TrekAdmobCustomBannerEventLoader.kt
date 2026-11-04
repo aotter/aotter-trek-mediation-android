@@ -4,9 +4,11 @@ import android.util.Log
 import android.view.View
 import com.aotter.net.dto.trek.response.TrekNativeAd
 import com.aotter.net.trek.TrekLogLevel
+import com.aotter.net.trek.ads.TrekAdError
 import com.aotter.net.trek.ads.TrekAdListener
 import com.aotter.net.trek.ads.TrekBannerAdView
 import com.aotter.trek.admob.mediation.BuildConfig
+import com.aotter.trek.admob.mediation.TrekAdmobDataKey
 import com.aotter.trek.admob.mediation.extension.logAt
 import com.google.android.gms.ads.AdError
 import com.google.android.gms.ads.mediation.MediationAdLoadCallback
@@ -24,11 +26,11 @@ class TrekAdmobCustomBannerEventLoader(
 
     private var mediationBannerAdCallback: MediationBannerAdCallback? = null
 
-    override fun onAdFailedToLoad(message: String) {
+    override fun onAdFailedToLoad(error: TrekAdError) {
 
-        mediationAdLoadCallback?.onFailure(AdError(0, message, SDK_DOMAIN))
+        mediationAdLoadCallback?.onFailure(AdError(TrekAdmobDataKey.adErrorCodeOf(error.code), error.message, SDK_DOMAIN))
 
-        Log.e(TAG, "AdError: $message")
+        Log.e(TAG, "AdError: ${error.code} ${error.message}")
     }
 
     override fun onAdLoaded(trekNativeAd: TrekNativeAd) {

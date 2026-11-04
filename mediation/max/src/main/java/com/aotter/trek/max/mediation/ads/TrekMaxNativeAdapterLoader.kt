@@ -7,13 +7,13 @@ import androidx.core.view.forEach
 import com.aotter.net.dto.trek.response.TrekNativeAd
 import com.aotter.net.trek.TrekDataKey
 import com.aotter.net.trek.TrekLogLevel
+import com.aotter.net.trek.ads.TrekAdError
 import com.aotter.net.trek.ads.TrekAdListener
 import com.aotter.net.trek.ads.TrekMediaView
 import com.aotter.net.utils.TrekAdViewUtils
 import com.aotter.trek.max.mediation.TrekMaxDataKey
 import com.aotter.trek.max.mediation.extension.logAt
 import com.applovin.mediation.MaxAdFormat
-import com.applovin.mediation.adapter.MaxAdapterError
 import com.applovin.mediation.adapter.listeners.MaxNativeAdAdapterListener
 import com.applovin.mediation.nativeAds.MaxNativeAd
 import com.applovin.mediation.nativeAds.MaxNativeAdView
@@ -87,10 +87,9 @@ class TrekMaxNativeAdapterLoader(
 
     }
 
-    override fun onAdFailedToLoad(message: String) {
-        super.onAdFailedToLoad(message)
+    override fun onAdFailedToLoad(error: TrekAdError) {
 
-        maxNativeAdAdapterListener?.onNativeAdLoadFailed(MaxAdapterError.NO_FILL)
+        maxNativeAdAdapterListener?.onNativeAdLoadFailed(TrekMaxDataKey.maxAdapterErrorOf(error.code))
 
         logAt(TrekLogLevel.NORMAL, TAG, "Ad failed to load.")
 

@@ -1,5 +1,8 @@
 package com.aotter.trek.max.mediation
 
+import com.aotter.net.trek.ads.TrekAdError
+import com.applovin.mediation.adapter.MaxAdapterError
+
 object TrekMaxDataKey {
 
     const val CATEGORY = "Category"
@@ -23,5 +26,9 @@ object TrekMaxDataKey {
         "BANNER" -> "BANNER"
         else -> null
     }
+
+    //Trek no fill (800) is reported as no fill, every other Trek failure as an internal error
+    internal fun maxAdapterErrorOf(trekErrorCode: Int): MaxAdapterError =
+        if (trekErrorCode == TrekAdError.NO_AD) MaxAdapterError.NO_FILL else MaxAdapterError.INTERNAL_ERROR
 
 }

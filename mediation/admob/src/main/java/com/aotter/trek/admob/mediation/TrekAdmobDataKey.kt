@@ -1,5 +1,8 @@
 package com.aotter.trek.admob.mediation
 
+import com.aotter.net.trek.ads.TrekAdError
+import com.google.android.gms.ads.AdRequest
+
 object TrekAdmobDataKey {
 
     const val CATEGORY = "Category"
@@ -23,5 +26,9 @@ object TrekAdmobDataKey {
         "BANNER" -> "BANNER"
         else -> null
     }
+
+    //Trek no fill (800) is reported as no fill, every other Trek failure as an internal error
+    internal fun adErrorCodeOf(trekErrorCode: Int): Int =
+        if (trekErrorCode == TrekAdError.NO_AD) AdRequest.ERROR_CODE_NO_FILL else AdRequest.ERROR_CODE_INTERNAL_ERROR
 
 }
