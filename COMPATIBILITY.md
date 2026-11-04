@@ -6,6 +6,7 @@
 |---|---|---|
 | **5.0.x**（如 `5.0.9`） | **21.x – 24.x** | 舊版。編譯於 21.3.0，使用已在 GMA **25.0 移除**的 `com.google.android.gms.ads.mediation.VersionInfo`，故**無法在 25.x 運作**。已發佈於 Artifactory、**不會移除**，供仍在舊 GMA 的 app 續用。 |
 | **5.6.0** | **25.0 以上（至最新）** | 對齊現代 GMA。改用 `com.google.android.gms.ads.VersionInfo`。**要求 app `minSdkVersion` ≥ 23**（GMA 24 起的要求）。 |
+| **5.6.2 以上**（AdMob、Ad Manager） | **GMA Next-Gen SDK**（`com.google.android.libraries.ads.mobile.sdk:ads-mobile-sdk`） | 5.6.2 起支援，用同一個 adapter。**要求 app `minSdkVersion` ≥ 24**；要在 `configurations.all` exclude `com.google.android.gms` 的 `play-services-ads` 與 `play-services-ads-lite`（Next-Gen SDK 已內含 adapter 需要的類別，兩套並存會有重複類別，見 Google 的 [Next-Gen 中介服務說明](https://developers.google.com/admob/android/next-gen/mediation)）；原生廣告版型沒有 MediaView 時，`registerNativeAd` 的 media view 參數傳 `null`。 |
 
 **為何新舊不能並存於同一版**：GMA **25.0** 移除了 `mediation.VersionInfo`；`Adapter.getVersionInfo()` / `getSDKVersionInfo()` 的回傳型別是綁死的，一份 adapter build 只能站在此斷點的一邊。因此以 **GMA 25.0** 為分界：舊版對應 ≤24.x、新版對應 25.0+。
 
