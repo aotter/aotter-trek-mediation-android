@@ -8,6 +8,8 @@ import com.aotter.gam.mediation.demo.databinding.ActivityGamBinding
 import com.aotter.gam.mediation.demo.native_ad.GamNativeAdRecyclerViewPageActivity
 import com.aotter.gam.mediation.demo.native_ad.GamNativeAdScrollViewActivity
 import com.google.android.gms.ads.MobileAds
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 
 class GamActivity : AppCompatActivity() {
 
@@ -19,6 +21,15 @@ class GamActivity : AppCompatActivity() {
         viewBinding = ActivityGamBinding.inflate(layoutInflater)
 
         setContentView(viewBinding.root)
+
+        // Edge-to-edge (enforced on Android 15+): appcompat 1.7 hands the combined
+        // status-bar + action-bar inset to the content view; pad so nothing is covered.
+        ViewCompat.setOnApplyWindowInsetsListener(viewBinding.root) { v, insets ->
+            val sb = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(sb.left, sb.top, sb.right, sb.bottom)
+            WindowInsetsCompat.CONSUMED
+        }
+
 
         MobileAds.initialize(this) {}
 

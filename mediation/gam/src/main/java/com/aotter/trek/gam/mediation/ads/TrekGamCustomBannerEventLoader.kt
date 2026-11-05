@@ -3,9 +3,13 @@ package com.aotter.trek.gam.mediation.ads
 import android.util.Log
 import android.view.View
 import com.aotter.net.dto.trek.response.TrekNativeAd
+import com.aotter.net.trek.TrekLogLevel
+import com.aotter.net.trek.ads.TrekAdError
 import com.aotter.net.trek.ads.TrekAdListener
 import com.aotter.net.trek.ads.TrekBannerAdView
 import com.aotter.trek.gam.mediation.BuildConfig
+import com.aotter.trek.gam.mediation.TrekGamDataKey
+import com.aotter.trek.gam.mediation.extension.logAt
 import com.google.android.gms.ads.AdError
 import com.google.android.gms.ads.mediation.MediationAdLoadCallback
 import com.google.android.gms.ads.mediation.MediationBannerAd
@@ -22,24 +26,24 @@ class TrekGamCustomBannerEventLoader(
 
     private var mediationBannerAdCallback: MediationBannerAdCallback? = null
 
-    override fun onAdFailedToLoad(message: String) {
+    override fun onAdFailedToLoad(error: TrekAdError) {
 
-        mediationAdLoadCallback?.onFailure(AdError(0, message, SDK_DOMAIN))
+        mediationAdLoadCallback?.onFailure(AdError(TrekGamDataKey.adErrorCodeOf(error.code), error.message, SDK_DOMAIN))
 
-        Log.e(TAG, "AdError: $message")
+        Log.e(TAG, "AdError: ${error.code} ${error.message}")
     }
 
     override fun onAdLoaded(trekNativeAd: TrekNativeAd) {
 
         mediationBannerAdCallback = mediationAdLoadCallback?.onSuccess(this)
 
-        Log.i(TAG, "AdLoaded success.")
+        logAt(TrekLogLevel.NORMAL, TAG, "AdLoaded success.")
 
     }
 
     override fun onAdClicked() {
 
-        Log.i(TAG, "AdClicked success.")
+        logAt(TrekLogLevel.NORMAL, TAG, "AdClicked success.")
 
         mediationBannerAdCallback?.reportAdClicked()
 
@@ -47,7 +51,7 @@ class TrekGamCustomBannerEventLoader(
 
     override fun onAdImpression() {
 
-        Log.i(TAG, "Banner Ad  impression success.")
+        logAt(TrekLogLevel.NORMAL, TAG, "Banner Ad  impression success.")
 
         mediationBannerAdCallback?.reportAdImpression()
 

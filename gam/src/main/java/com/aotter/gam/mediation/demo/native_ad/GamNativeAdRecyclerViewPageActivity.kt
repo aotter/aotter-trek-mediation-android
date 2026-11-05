@@ -22,6 +22,8 @@ import com.google.android.gms.ads.AdLoader
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.nativead.NativeAd
 import kotlin.math.roundToInt
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 
 class GamNativeAdRecyclerViewPageActivity : AppCompatActivity() {
 
@@ -37,6 +39,15 @@ class GamNativeAdRecyclerViewPageActivity : AppCompatActivity() {
         viewBinding = ActivityGamNativeAdRecyclerviewViewBinding.inflate(layoutInflater)
 
         setContentView(viewBinding.root)
+
+        // Edge-to-edge (enforced on Android 15+): appcompat 1.7 hands the combined
+        // status-bar + action-bar inset to the content view; pad so nothing is covered.
+        ViewCompat.setOnApplyWindowInsetsListener(viewBinding.root) { v, insets ->
+            val sb = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(sb.left, sb.top, sb.right, sb.bottom)
+            WindowInsetsCompat.CONSUMED
+        }
+
 
         initView()
 
@@ -221,16 +232,19 @@ class GamNativeAdRecyclerViewPageActivity : AppCompatActivity() {
 
         mediaView?.setImageScaleType(ImageView.ScaleType.FIT_XY)
 
-        if ((nativeAd.mediaContent?.aspectRatio ?: 0.0f) > 1f) {
-            mediaView?.post {
+        // Always pin the media height. Google demand rendered as HTML/video
+        // reports no aspect ratio, and a wrap_content MediaView inside this
+        // unbounded list would grow without limit.
+        val ratio = nativeAd.mediaContent?.aspectRatio?.takeIf { it > 0f } ?: (16f / 9f)
 
-                val height = (adView.root.measuredWidth * 0.5625f).roundToInt()
+        mediaView?.post {
 
-                mediaView.layoutParams.height = height
+            val height = (mediaView.measuredWidth / ratio).roundToInt()
 
-                mediaView.requestLayout()
+            mediaView.layoutParams.height = height
 
-            }
+            mediaView.requestLayout()
+
         }
 
         adView.nativeAdView.mediaView = mediaView

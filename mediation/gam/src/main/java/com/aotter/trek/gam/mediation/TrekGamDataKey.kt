@@ -1,5 +1,8 @@
 package com.aotter.trek.gam.mediation
 
+import com.aotter.net.trek.ads.TrekAdError
+import com.google.android.gms.ads.AdRequest
+
 object TrekGamDataKey {
 
     const val CATEGORY = "Category"
@@ -9,5 +12,23 @@ object TrekGamDataKey {
     const val ICON_IMAGE = "IconImage"
     const val ICON_IMAGE_HD = "IconImageHd"
     const val SPONSOR = "Sponsor"
+
+    const val AD_SIZE_WIDTH = "adSizeWidth"
+    const val AD_SIZE_HEIGHT = "adSizeHeight"
+
+    const val AD_TYPE = "adType"
+
+    //The Trek placement type the ad was served for, in the same three values as the iOS adapter:
+    //the server's SUPR_AD is NATIVE_MULTIMEDIA, and any other value gets no AD_TYPE entry
+    internal fun adTypeOf(serverAdType: String): String? = when (serverAdType) {
+        "NATIVE" -> "NATIVE"
+        "SUPR_AD" -> "NATIVE_MULTIMEDIA"
+        "BANNER" -> "BANNER"
+        else -> null
+    }
+
+    //Trek no fill (800) is reported as no fill, every other Trek failure as an internal error
+    internal fun adErrorCodeOf(trekErrorCode: Int): Int =
+        if (trekErrorCode == TrekAdError.NO_AD) AdRequest.ERROR_CODE_NO_FILL else AdRequest.ERROR_CODE_INTERNAL_ERROR
 
 }

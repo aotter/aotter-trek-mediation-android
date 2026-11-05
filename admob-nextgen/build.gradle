@@ -1,0 +1,70 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    compileSdk 35
+
+    buildFeatures {
+        viewBinding true
+    }
+
+    defaultConfig {
+        applicationId "com.aotter.admob.nextgen.demo"
+        //GMA Next-Gen SDK requires minSdk 24 (the legacy demos use 23)
+        minSdk 24
+        targetSdk 35
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        debug {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+    namespace 'com.aotter.admob.nextgen.demo'
+}
+
+//The Next-Gen SDK bundles every com.google.android.gms.ads class that mediation
+//adapters need, so the legacy SDK must not be pulled in transitively (duplicate
+//classes otherwise). This is Google's documented setup for running existing
+//adapters on the Next-Gen SDK:
+//https://developers.google.com/admob/android/next-gen/mediation
+configurations.all {
+    exclude group: "com.google.android.gms", module: "play-services-ads"
+    exclude group: "com.google.android.gms", module: "play-services-ads-lite"
+}
+
+dependencies {
+
+    implementation 'com.google.android.libraries.ads.mobile.sdk:ads-mobile-sdk:1.4.0'
+
+    //Same adapter the legacy demo uses, resolved from source so the samples
+    //always exercise the current adapter code.
+    implementation project(':mediation:admob')
+
+    //Glide
+    implementation 'com.github.bumptech.glide:glide:4.14.2'
+
+    //Declared explicitly: the legacy demo got it transitively from
+    //play-services-ads, which this module excludes.
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+
+    implementation 'androidx.core:core-ktx:1.8.0'
+    implementation 'androidx.appcompat:appcompat:1.7.1'
+    implementation 'com.google.android.material:material:1.6.1'
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+}

@@ -1,0 +1,41 @@
+# Trek Mediation — Google Mobile Ads SDK 相容性
+
+## 支援矩陣
+
+| Trek mediation 版本 | Google Mobile Ads SDK (`play-services-ads`) | 說明 |
+|---|---|---|
+| **5.0.x**（如 `5.0.9`） | **21.x – 24.x** | 舊版。編譯於 21.3.0，使用已在 GMA **25.0 移除**的 `com.google.android.gms.ads.mediation.VersionInfo`，故**無法在 25.x 運作**。已發佈於 Artifactory、**不會移除**，供仍在舊 GMA 的 app 續用。 |
+| **5.6.0** | **25.0 以上（至最新）** | 對齊現代 GMA。改用 `com.google.android.gms.ads.VersionInfo`。**要求 app `minSdkVersion` ≥ 23**（GMA 24 起的要求）。 |
+| **5.6.2 以上**（AdMob、Ad Manager） | **GMA Next-Gen SDK**（`com.google.android.libraries.ads.mobile.sdk:ads-mobile-sdk`） | 5.6.2 起支援，用同一個 adapter。**要求 app `minSdkVersion` ≥ 24**；要在 `configurations.all` exclude `com.google.android.gms` 的 `play-services-ads` 與 `play-services-ads-lite`（Next-Gen SDK 已內含 adapter 需要的類別，兩套並存會有重複類別，見 Google 的 [Next-Gen 中介服務說明](https://developers.google.com/admob/android/next-gen/mediation)）；原生廣告版型沒有 MediaView 時，`registerNativeAd` 的 media view 參數傳 `null`。 |
+
+**為何新舊不能並存於同一版**：GMA **25.0** 移除了 `mediation.VersionInfo`；`Adapter.getVersionInfo()` / `getSDKVersionInfo()` 的回傳型別是綁死的，一份 adapter build 只能站在此斷點的一邊。因此以 **GMA 25.0** 為分界：舊版對應 ≤24.x、新版對應 25.0+。
+
+適用三個 adapter：`trek-admob-mediation`、`trek-gam-mediation`、`trek-max-mediation`（同版本線）。
+
+## 與 Trek Ads SDK（`trek-ads`）的版本配對
+
+mediation 與 `trek-ads` 是**兩個獨立版號**：mediation 只在自身有變動時進版，配對的 `trek-ads` 由 mediation 的 POM 宣告、Gradle 自動解析——接入端**不需要**（也不應該）手動對齊兩者版號。
+
+| Trek mediation | trek-ads（POM 自動拉入） | 說明 |
+|---|---|---|
+| **5.6.5** | 5.6.5 | SDK：載入失敗改帶錯誤碼 `TrekAdError`（800 沒有廣告、900 其他失敗、901 尚未初始化、1000 placeUid 空白），尚未初始化時不再拋出例外；`constraintlayout` 改為 api 依賴；OkHttp 升到 4.12.1；CatRun 素材顯示修正；新增 `onAdMediaLoaded`。adapter：AdMob 與 Ad Manager 的原生廣告 extras 新增 `adType`，表示廣告所屬的 Trek 版位類型，值為 `NATIVE`（Native Ad 版位）、`NATIVE_MULTIMEDIA`（Native Multimedia Ad 版位）或 `BANNER`；Trek 沒有廣告可填時回報 `ERROR_CODE_NO_FILL`，其他失敗回報 `ERROR_CODE_INTERNAL_ERROR` |
+| 5.6.4 | 5.6.4 | 隱私修正：SDK 與 adapter 預設不再寫 logcat，adapter 的 log 改依 `TrekAds.setLogLevel`；SDK 同版升 OM SDK 1.6.9 |
+| 5.6.3 | 5.6.2 | mediation-only 修復（無 MediaView 版型的曝光／OM 量測），SDK 無變動 |
+| 5.6.2 | 5.6.2 | |
+| 5.6.1 | 5.6.1 | |
+| 5.6.0 | 5.6.0 | |
+
+> 5.6.0–5.6.2 兩邊同號是「每版剛好都有變動」的結果，不是規則；自 5.6.3 起以本表與 POM 為準。
+
+## 升級到 GMA 25+ 版（給接入的開發者）
+
+1. Google Mobile Ads SDK 升到 `com.google.android.gms:play-services-ads:25.x`（或更新）。
+2. Trek mediation 依賴升到 GMA 25 支援版。
+3. app 的 `minSdkVersion` 設為 **23 以上**。
+4. `compileSdk` 建議 35 以上。
+
+## 仍在舊 GMA（≤ 24.x）的 app
+
+沿用現有的 `5.0.x` mediation（Artifactory 已發佈、不移除）；或先把 GMA 升到 25+，再改用新版。
+
+> 註：`5.6.0` 另含媒體長寬比（aspectRatio）方向修正（第二項 BREAKING：升級後原生廣告 media view 的長寬比顯示方向會改變），詳見 release note；此與本頁 GMA 版本相容性屬不同議題，但同為本版變更。

@@ -1,12 +1,13 @@
 package com.aotter.trek.admob.mediation.ads
 
 
-import android.util.Log
 import com.aotter.net.trek.TrekAds
+import com.aotter.net.trek.TrekLogLevel
 import com.aotter.net.trek.ads.TrekAdLoader
 import com.aotter.net.trek.ads.TrekAdRequest
 import com.aotter.trek.admob.mediation.BuildConfig
 import com.aotter.trek.admob.mediation.TrekAdmobDataKey
+import com.aotter.trek.admob.mediation.extension.logAt
 import com.google.android.gms.ads.mediation.MediationAdLoadCallback
 import com.google.android.gms.ads.mediation.MediationNativeAdCallback
 import com.google.android.gms.ads.mediation.MediationNativeAdConfiguration
@@ -56,15 +57,15 @@ class TrekAdmobCustomEventNative : TrekAdmobCustomEventBase() {
                 mediationNativeAdConfiguration.mediationExtras.getString(TrekAdmobDataKey.CONTENT_TITLE)
                     ?: ""
 
-            Log.i(TAG, "clientId : $clientId")
+            logAt(TrekLogLevel.DETAIL, TAG, "clientId : $clientId")
 
-            Log.i(TAG, "placeUid : $placeUid")
+            logAt(TrekLogLevel.DETAIL, TAG, "placeUid : $placeUid")
 
-            Log.i(TAG, "category : $category")
+            logAt(TrekLogLevel.DETAIL, TAG, "category : $category")
 
-            Log.i(TAG, "contentUrl : $contentUrl")
+            logAt(TrekLogLevel.DETAIL, TAG, "contentUrl : $contentUrl")
 
-            Log.i(TAG, "contentTitle : $contentTitle")
+            logAt(TrekLogLevel.DETAIL, TAG, "contentTitle : $contentTitle")
 
             TrekAds.initialize(
                 context,

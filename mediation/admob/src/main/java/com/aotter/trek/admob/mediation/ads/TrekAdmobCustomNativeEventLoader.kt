@@ -3,8 +3,12 @@ package com.aotter.trek.admob.mediation.ads
 import android.content.Context
 import android.util.Log
 import com.aotter.net.dto.trek.response.TrekNativeAd
+import com.aotter.net.trek.TrekLogLevel
+import com.aotter.net.trek.ads.TrekAdError
 import com.aotter.net.trek.ads.TrekAdListener
 import com.aotter.trek.admob.mediation.BuildConfig
+import com.aotter.trek.admob.mediation.TrekAdmobDataKey
+import com.aotter.trek.admob.mediation.extension.logAt
 import com.google.android.gms.ads.AdError
 import com.google.android.gms.ads.mediation.MediationAdLoadCallback
 import com.google.android.gms.ads.mediation.MediationNativeAdCallback
@@ -22,11 +26,11 @@ class TrekAdmobCustomNativeEventLoader(
 
     private var mediationNativeAdCallback: MediationNativeAdCallback? = null
 
-    override fun onAdFailedToLoad(message: String) {
+    override fun onAdFailedToLoad(error: TrekAdError) {
 
-        mediationAdLoadCallback.onFailure(AdError(0, message, SDK_DOMAIN))
+        mediationAdLoadCallback.onFailure(AdError(TrekAdmobDataKey.adErrorCodeOf(error.code), error.message, SDK_DOMAIN))
 
-        Log.e(TAG, "AdError: $message")
+        Log.e(TAG, "AdError: ${error.code} ${error.message}")
 
     }
 
@@ -39,13 +43,13 @@ class TrekAdmobCustomNativeEventLoader(
         mediationNativeAdCallback =
             mediationAdLoadCallback.onSuccess(trekAdmobUnifiedNativeAdMapper)
 
-        Log.i(TAG, "AdLoaded success.")
+        logAt(TrekLogLevel.NORMAL, TAG, "AdLoaded success.")
 
     }
 
     override fun onAdClicked() {
 
-        Log.i(TAG, "AdClicked success.")
+        logAt(TrekLogLevel.NORMAL, TAG, "AdClicked success.")
 
         mediationNativeAdCallback?.reportAdClicked()
 
@@ -53,7 +57,7 @@ class TrekAdmobCustomNativeEventLoader(
 
     override fun onAdImpression() {
 
-        Log.i(TAG, "Native ad impression success.")
+        logAt(TrekLogLevel.NORMAL, TAG, "Native ad impression success.")
 
         mediationNativeAdCallback?.reportAdImpression()
 

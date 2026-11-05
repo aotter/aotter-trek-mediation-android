@@ -22,10 +22,10 @@
             <ImageView
                 android:id="@+id/adImg"
                 android:layout_width="0dp"
-                android:layout_height="0dp"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
                 android:background="@color/purple_200"
-                android:scaleType="fitXY"
-                app:layout_constraintDimensionRatio="16:9"
+                android:scaleType="fitCenter"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />

@@ -3,16 +3,17 @@ package com.aotter.trek.max.mediation.ads
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import androidx.core.view.forEach
 import com.aotter.net.dto.trek.response.TrekNativeAd
 import com.aotter.net.trek.TrekDataKey
+import com.aotter.net.trek.TrekLogLevel
+import com.aotter.net.trek.ads.TrekAdError
 import com.aotter.net.trek.ads.TrekAdListener
 import com.aotter.net.trek.ads.TrekMediaView
 import com.aotter.net.utils.TrekAdViewUtils
 import com.aotter.trek.max.mediation.TrekMaxDataKey
+import com.aotter.trek.max.mediation.extension.logAt
 import com.applovin.mediation.MaxAdFormat
-import com.applovin.mediation.adapter.MaxAdapterError
 import com.applovin.mediation.adapter.listeners.MaxNativeAdAdapterListener
 import com.applovin.mediation.nativeAds.MaxNativeAd
 import com.applovin.mediation.nativeAds.MaxNativeAdView
@@ -60,12 +61,20 @@ class TrekMaxNativeAdapterLoader(
             .setAdvertiser(trekNativeAd.advertiserName ?: "")
             .setCallToAction(trekNativeAd.callToAction ?: "")
 
+        trekNativeAd.mediaContentAspectRatio?.takeIf { it > 0f && it.isFinite() }?.let {
+
+            //Trek reports aspectRatio as height/width, MAX defines it as width/height,
+            //so it has to be inverted
+            builder.setMediaContentAspectRatio(1f / it)
+
+        }
+
 
         val trekMaxNativeAd = TrekMaxNativeAd(builder, trekNativeAd)
 
         maxNativeAdAdapterListener?.onNativeAdLoaded(trekMaxNativeAd, getBundle(trekNativeAd))
 
-        Log.i(TAG, "Ad Loaded.")
+        logAt(TrekLogLevel.NORMAL, TAG, "Ad Loaded.")
 
     }
 
@@ -74,16 +83,15 @@ class TrekMaxNativeAdapterLoader(
 
         maxNativeAdAdapterListener?.onNativeAdClicked()
 
-        Log.i(TAG, "Ad Clicked.")
+        logAt(TrekLogLevel.NORMAL, TAG, "Ad Clicked.")
 
     }
 
-    override fun onAdFailedToLoad(message: String) {
-        super.onAdFailedToLoad(message)
+    override fun onAdFailedToLoad(error: TrekAdError) {
 
-        maxNativeAdAdapterListener?.onNativeAdLoadFailed(MaxAdapterError.NO_FILL)
+        maxNativeAdAdapterListener?.onNativeAdLoadFailed(TrekMaxDataKey.maxAdapterErrorOf(error.code))
 
-        Log.i(TAG, "Ad failed to load.")
+        logAt(TrekLogLevel.NORMAL, TAG, "Ad failed to load.")
 
     }
 
@@ -92,7 +100,7 @@ class TrekMaxNativeAdapterLoader(
 
         maxNativeAdAdapterListener?.onNativeAdDisplayed(getBundle(trekNativeAd))
 
-        Log.i(TAG, "Ad impression.")
+        logAt(TrekLogLevel.NORMAL, TAG, "Ad impression.")
 
     }
 
@@ -109,6 +117,20 @@ class TrekMaxNativeAdapterLoader(
             bundle.putString(TrekMaxDataKey.ICON_IMAGE, this.imgIcon.uri.toString())
 
             bundle.putString(TrekMaxDataKey.ICON_IMAGE_HD, this.imgIconHd.uri.toString())
+
+            if (this.mediaWidth > 0 && this.mediaHeight > 0) {
+
+                bundle.putString(TrekMaxDataKey.AD_SIZE_WIDTH, this.mediaWidth.toString())
+
+                bundle.putString(TrekMaxDataKey.AD_SIZE_HEIGHT, this.mediaHeight.toString())
+
+            }
+
+            TrekMaxDataKey.adTypeOf(this.adType)?.let {
+
+                bundle.putString(TrekMaxDataKey.AD_TYPE, it)
+
+            }
 
         }
 
@@ -140,7 +162,7 @@ class TrekMaxNativeAdapterLoader(
 
                 }
 
-                Log.i(TAG, "Prepare view for interaction finish.")
+                logAt(TrekLogLevel.DETAIL, TAG, "Prepare view for interaction finish.")
 
             }
 
