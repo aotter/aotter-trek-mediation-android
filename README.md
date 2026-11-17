@@ -4,7 +4,10 @@
 https://trek.gitbook.io/aottertrek-sdk-doc/android/admob-mediation
 
 ### Trek AdMob Mediation release change log
-- 2026/11/05 release - Mediation `5.6.5` (Recommend)
+- 2026/11/17 release - Mediation `5.6.6` (Recommend)
+  - Depends on trek-ads `5.6.6`: apps minified with R8 full mode (the default since Android Gradle Plugin 8.0) no longer fail every Trek request, which through AdMob and Ad Manager showed up as no fill. trek-ads ships the keep rules it needs, and Retrofit moves to 2.12.0
+  - The AdMob and Ad Manager adapters ship a keep rule for Room. The Google Mobile Ads SDK pulls in an older WorkManager whose Room rules do not keep the database constructor, so an app minified with R8 full mode crashed at startup in `WorkDatabase`
+- 2026/11/05 release - Mediation `5.6.5`
   - Native ad extras (AdMob, Ad Manager) carry `adType`, the Trek placement type of the ad: `NATIVE` (Native Ad placement), `NATIVE_MULTIMEDIA` (Native Multimedia Ad placement) or `BANNER`
   - When Trek has no ad to fill, the AdMob and Ad Manager adapters report `ERROR_CODE_NO_FILL`; other failures are reported as `ERROR_CODE_INTERNAL_ERROR`
   - Depends on trek-ads `5.6.5`: load failures carry error codes (`TrekAdError`) and no longer throw when the SDK is not initialized; `constraintlayout` is exposed as an api dependency; OkHttp 4.12.1; CatRun creative display fix; new `onAdMediaLoaded`
